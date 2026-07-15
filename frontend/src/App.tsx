@@ -4,6 +4,8 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import DashboardLayout from './layouts/DashboardLayout'
 import ProjectsPage from './pages/dashboard/ProjectsPage'
+import UploadPage from './pages/dashboard/UploadPage'
+import ProfilePage from './pages/dashboard/ProfilePage'
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
       {/* Protected Dashboard Routes */}
       <Route path="/app" element={<DashboardLayout />}>
         <Route index element={<ProjectsPage />} />
+        <Route path="upload" element={<UploadPage />} />
+        <Route path="profile/:projectId" element={<ProfilePage />} />
       </Route>
     </Routes>
   )

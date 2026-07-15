@@ -1,0 +1,2 @@
+2026-07-15 20:08:11.007 | INFO     | app.main:create_app:55 - TableauGen AI v1.0.0 started.
+2026-07-15 20:08:11.359 | INFO     | app.main:on_startup:53 - Database tables created / verified.
