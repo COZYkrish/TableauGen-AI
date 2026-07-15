@@ -46,8 +46,15 @@ def create_app() -> FastAPI:
     app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
     app.include_router(uploads.router, prefix="/api/uploads", tags=["Uploads"])
 
+    # Startup: create tables -----------------------------------------------
+    @app.on_event("startup")
+    def on_startup():
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables created / verified.")
+
     logger.info(f"{settings.APP_NAME} v{settings.APP_VERSION} started.")
     return app
 
 
 app = create_app()
+

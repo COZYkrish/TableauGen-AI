@@ -1,0 +1,31 @@
+Order ID,Order Date,Ship Date,Customer Name,Segment,Country,City,State,Region,Category,Sub-Category,Product Name,Sales,Quantity,Discount,Profit
+US-2024-001,2024-01-05,2024-01-10,John Smith,Consumer,United States,New York,New York,East,Technology,Phones,iPhone 15 Pro,999.99,2,0.0,350.00
+US-2024-002,2024-01-08,2024-01-12,Sarah Chen,Corporate,United States,Los Angeles,California,West,Furniture,Chairs,Herman Miller Aeron,1294.50,1,0.1,310.00
+US-2024-003,2024-01-12,2024-01-15,Marcus Rivera,Consumer,United States,Chicago,Illinois,Central,Office Supplies,Paper,HP Printer Paper,24.99,5,0.2,8.50
+US-2024-004,2024-01-15,2024-01-20,Emily Tanaka,Home Office,United States,Houston,Texas,Central,Technology,Accessories,Logitech MX Master,89.99,3,0.0,45.00
+US-2024-005,2024-01-18,2024-01-22,David Johnson,Consumer,United States,Phoenix,Arizona,West,Furniture,Tables,IKEA Standing Desk,549.00,1,0.15,120.00
+US-2024-006,2024-01-22,2024-01-25,Lisa Park,Corporate,United States,Philadelphia,Pennsylvania,East,Office Supplies,Binders,Avery Binders,12.50,10,0.0,5.00
+US-2024-007,2024-01-25,2024-01-28,Robert Kim,Consumer,United States,San Antonio,Texas,Central,Technology,Phones,Samsung Galaxy S24,849.99,1,0.05,280.00
+US-2024-008,2024-02-01,2024-02-05,Amanda White,Home Office,United States,San Diego,California,West,Furniture,Bookcases,Target Bookcase,199.99,2,0.0,65.00
+US-2024-009,2024-02-05,2024-02-08,James Wilson,Corporate,United States,Dallas,Texas,Central,Office Supplies,Storage,Bankers Box,45.00,8,0.1,18.00
+US-2024-010,2024-02-08,2024-02-12,Michelle Lee,Consumer,United States,San Jose,California,West,Technology,Accessories,Apple AirPods Pro,249.99,4,0.0,100.00
+US-2024-011,2024-02-12,2024-02-15,Brian Taylor,Consumer,United States,Austin,Texas,Central,Technology,Laptops,MacBook Air M3,1199.00,1,0.0,420.00
+US-2024-012,2024-02-15,2024-02-18,Jennifer Martinez,Corporate,United States,Jacksonville,Florida,South,Furniture,Chairs,Steelcase Leap,1049.00,2,0.2,220.00
+US-2024-013,2024-02-20,2024-02-24,Kevin Brown,Home Office,United States,Columbus,Ohio,East,Office Supplies,Art,Sharpie Markers,15.99,6,0.0,7.50
+US-2024-014,2024-02-25,2024-02-28,Nicole Davis,Consumer,United States,Charlotte,North Carolina,South,Technology,Phones,Google Pixel 8,699.00,2,0.1,210.00
+US-2024-015,2024-03-01,2024-03-05,Thomas Anderson,Consumer,United States,Indianapolis,Indiana,Central,Furniture,Tables,West Elm Desk,799.00,1,0.0,280.00
+US-2024-016,2024-03-05,2024-03-08,Rachel Green,Corporate,United States,San Francisco,California,West,Office Supplies,Paper,Staples Copy Paper,32.99,12,0.15,10.00
+US-2024-017,2024-03-08,2024-03-12,Daniel Harris,Home Office,United States,Seattle,Washington,West,Technology,Accessories,Sony WH-1000XM5,349.99,1,0.0,140.00
+US-2024-018,2024-03-12,2024-03-15,Sophia Clark,Consumer,United States,Denver,Colorado,West,Furniture,Chairs,Autonomous ErgoChair,449.00,3,0.05,135.00
+US-2024-019,2024-03-15,2024-03-18,Andrew Lewis,Corporate,United States,Boston,Massachusetts,East,Office Supplies,Binders,Wilson Jones Binders,28.50,15,0.2,8.00
+US-2024-020,2024-03-20,2024-03-24,Olivia Robinson,Consumer,United States,Nashville,Tennessee,South,Technology,Laptops,Dell XPS 15,1599.00,1,0.0,480.00
+US-2024-021,2024-03-25,2024-03-28,William Walker,Home Office,United States,Portland,Oregon,West,Furniture,Bookcases,IKEA Kallax,159.99,2,0.1,50.00
+US-2024-022,2024-04-01,2024-04-04,Emma Hall,Consumer,United States,Memphis,Tennessee,South,Office Supplies,Storage,Rubbermaid Bins,35.00,5,0.0,15.00
+US-2024-023,2024-04-05,2024-04-08,Christopher Allen,Corporate,United States,Baltimore,Maryland,East,Technology,Phones,OnePlus 12,799.99,2,0.0,240.00
+US-2024-024,2024-04-10,2024-04-14,Ashley Young,Consumer,United States,Milwaukee,Wisconsin,Central,Furniture,Tables,CB2 Console Table,399.00,1,0.15,95.00
+US-2024-025,2024-04-15,2024-04-18,Matthew King,Home Office,United States,Albuquerque,New Mexico,West,Office Supplies,Art,Prismacolor Pencils,42.99,3,0.0,18.00
+US-2024-026,2024-04-18,2024-04-22,Jessica Wright,Corporate,United States,Tucson,Arizona,West,Technology,Accessories,Anker USB-C Hub,59.99,6,0.1,25.00
+US-2024-027,2024-04-22,2024-04-25,Ryan Scott,Consumer,United States,Fresno,California,West,Furniture,Chairs,Secretlab Titan,499.00,1,0.0,175.00
+US-2024-028,2024-05-01,2024-05-05,Megan Torres,Consumer,United States,Kansas City,Missouri,Central,Office Supplies,Paper,Hammermill Paper,19.99,8,0.2,6.00
+US-2024-029,2024-05-05,2024-05-08,Brandon Nelson,Home Office,United States,Atlanta,Georgia,South,Technology,Laptops,Lenovo ThinkPad,1349.00,1,0.05,400.00
+US-2024-030,2024-05-10,2024-05-14,Stephanie Hill,Corporate,United States,Miami,Florida,South,Furniture,Tables,Pottery Barn Desk,899.00,2,0.0,320.00
