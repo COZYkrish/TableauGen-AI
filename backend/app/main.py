@@ -7,7 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
 from app.core.config import settings
+from app.core.database import engine, Base
 from app.api import auth, projects, uploads, health
+
+# Import models so Base.metadata knows about them
+from app.models import user, project  # noqa: F401
 
 logger.add(
     "logs/tableaugen_{time}.log",
