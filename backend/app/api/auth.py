@@ -47,3 +47,28 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
 def get_me(current_user: User = Depends(get_current_user)):
     """Return the current authenticated user's profile."""
     return current_user
+
+
+from pydantic import BaseModel
+from typing import Optional
+
+class UpdateProfileRequest(BaseModel):
+    full_name: Optional[str] = None
+    avatar_url: Optional[str] = None
+
+
+@router.patch("/me", response_model=UserResponse)
+def update_profile(
+    body: UpdateProfileRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Update the current user's profile fields."""
+    if body.full_name is not None:
+        current_user.full_name = body.full_name.strip()
+    if body.avatar_url is not None:
+        current_user.avatar_url = body.avatar_url.strip() or None
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+

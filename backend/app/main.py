@@ -11,7 +11,7 @@ from app.core.database import engine, Base
 from app.api import auth, projects, uploads, health, dashboard
 
 # Import models so Base.metadata knows about them
-from app.models import user, project  # noqa: F401
+from app.models import user, project, pipeline_job  # noqa: F401
 
 logger.add(
     "logs/tableaugen_{time}.log",

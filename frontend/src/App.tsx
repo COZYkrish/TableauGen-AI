@@ -7,6 +7,8 @@ import ProjectsPage from './pages/dashboard/ProjectsPage'
 import UploadPage from './pages/dashboard/UploadPage'
 import ProfilePage from './pages/dashboard/ProfilePage'
 import DashboardPage from './pages/dashboard/DashboardPage'
+import HistoryPage from './pages/dashboard/HistoryPage'
+import SettingsPage from './pages/dashboard/SettingsPage'
 
 export default function App() {
   return (
@@ -22,6 +24,8 @@ export default function App() {
         <Route path="upload" element={<UploadPage />} />
         <Route path="profile/:projectId" element={<ProfilePage />} />
         <Route path="dashboard/:projectId" element={<DashboardPage />} />
+        <Route path="history" element={<HistoryPage />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>
   )

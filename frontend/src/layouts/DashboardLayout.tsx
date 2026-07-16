@@ -1,28 +1,46 @@
-import { Outlet, NavLink, Link } from 'react-router-dom'
+import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
-  LayoutDashboard, FolderKanban, Upload, History,
-  Settings, LogOut, Sparkles, ChevronLeft, Menu, User
+  LayoutDashboard, Upload, History,
+  Settings, LogOut, Sparkles, ChevronLeft, Menu
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
+import { auth, clearToken, type UserResponse } from '@/lib/api'
 
 const navItems = [
   { to: '/app', icon: LayoutDashboard, label: 'Projects', end: true },
   { to: '/app/upload', icon: Upload, label: 'New Upload' },
-  { to: '/app/templates', icon: FolderKanban, label: 'Templates' },
   { to: '/app/history', icon: History, label: 'Export History' },
   { to: '/app/settings', icon: Settings, label: 'Settings' },
 ]
 
 export default function DashboardLayout() {
+  const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [user, setUser] = useState<UserResponse | null>(null)
+
+  useEffect(() => {
+    auth.me()
+      .then(setUser)
+      .catch(() => {
+        navigate('/login')
+      })
+  }, [])
+
+  const handleSignOut = () => {
+    clearToken()
+    navigate('/')
+  }
+
+  const initials = user?.full_name
+    ? user.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+    : 'U'
 
   return (
     <div className="flex h-screen bg-[var(--color-bg-deep)] overflow-hidden">
       {/* ─ Sidebar ──────────────────────────────────────────────────────── */}
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -77,6 +95,40 @@ export default function DashboardLayout() {
           ))}
         </nav>
 
+        {/* User info + sign out */}
+        <div className={cn(
+          'border-t border-[var(--color-border)] p-3',
+          collapsed ? 'flex flex-col items-center gap-2' : 'space-y-1'
+        )}>
+          {!collapsed && user && (
+            <div className="flex items-center gap-2.5 px-2 py-1.5">
+              <div className="w-7 h-7 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold shrink-0">
+                {initials}
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-medium truncate">{user.full_name}</p>
+                <p className="text-[10px] text-[var(--color-text-muted)] truncate">{user.email}</p>
+              </div>
+            </div>
+          )}
+          {collapsed && (
+            <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold">
+              {initials}
+            </div>
+          )}
+          <button
+            onClick={handleSignOut}
+            className={cn(
+              'flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[var(--color-text-muted)] hover:text-[var(--color-danger)] hover:bg-white/[0.03] transition-all w-full',
+              collapsed && 'justify-center'
+            )}
+            title="Sign out"
+          >
+            <LogOut className="w-3.5 h-3.5 shrink-0" />
+            {!collapsed && <span>Sign Out</span>}
+          </button>
+        </div>
+
         {/* Collapse toggle */}
         <div className="hidden lg:flex border-t border-[var(--color-border)] p-3">
           <button
@@ -106,19 +158,14 @@ export default function DashboardLayout() {
           <div className="hidden lg:block" />
 
           {/* Right side */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center">
-                <User className="w-4 h-4 text-white" />
-              </div>
-              <div className="hidden sm:block">
-                <p className="text-sm font-medium leading-none">User</p>
-                <p className="text-xs text-[var(--color-text-muted)] mt-0.5">Free Plan</p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold">
+              {initials}
             </div>
-            <button className="text-[var(--color-text-muted)] hover:text-[var(--color-danger)] transition-colors" title="Sign out">
-              <LogOut className="w-4 h-4" />
-            </button>
+            <div className="hidden sm:block">
+              <p className="text-sm font-medium leading-none">{user?.full_name ?? 'Loading...'}</p>
+              <p className="text-xs text-[var(--color-text-muted)] mt-0.5">Free Plan</p>
+            </div>
           </div>
         </header>
 

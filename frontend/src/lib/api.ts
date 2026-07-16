@@ -62,6 +62,8 @@ export const auth = {
   signup: (data: SignupPayload) =>
     request<UserResponse>('/auth/signup', { method: 'POST', body: JSON.stringify(data) }),
   me: () => request<UserResponse>('/auth/me'),
+  updateProfile: (data: { full_name?: string; avatar_url?: string }) =>
+    request<UserResponse>('/auth/me', { method: 'PATCH', body: JSON.stringify(data) }),
 }
 
 // ── Projects ────────────────────────────────────────────────────────────────
@@ -72,10 +74,33 @@ export interface ProjectResponse {
   column_count: number | null; created_at: string; updated_at: string
 }
 
+export interface ExportHistoryItem {
+  project_id: number
+  project_name: string
+  file_name: string | null
+  file_size_kb: number | null
+  row_count: number | null
+  column_count: number | null
+  exported_at: string | null
+  download_url: string
+}
+
+export interface ProjectStats {
+  total_projects: number
+  by_status: Record<string, number>
+  total_rows_analyzed: number
+  total_columns_analyzed: number
+  exported_count: number
+}
+
 export const projects = {
   list: () => request<{ projects: ProjectResponse[]; total: number }>('/projects/'),
   get: (id: number) => request<ProjectResponse>(`/projects/${id}`),
+  rename: (id: number, name: string, description?: string) =>
+    request<ProjectResponse>(`/projects/${id}`, { method: 'PATCH', body: JSON.stringify({ name, description }) }),
   delete: (id: number) => request<void>(`/projects/${id}`, { method: 'DELETE' }),
+  stats: () => request<ProjectStats>('/projects/stats/summary'),
+  exportHistory: () => request<{ exports: ExportHistoryItem[]; total: number }>('/projects/exports/history'),
 }
 
 // ── Uploads ─────────────────────────────────────────────────────────────────
