@@ -2,7 +2,7 @@ import { Outlet, NavLink, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   LayoutDashboard, Upload, History,
-  Settings, LogOut, Sparkles, ChevronLeft, Menu
+  Settings, LogOut, Sparkles, ChevronLeft, Menu, Brain
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'

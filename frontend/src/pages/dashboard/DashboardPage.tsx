@@ -6,7 +6,7 @@ import {
   BarChart3, TrendingUp, PieChart, Map, GitBranch, Layers,
   RefreshCw, Sparkles, CheckCircle2, DollarSign, Package,
   Percent, Hash, BarChart2, Filter, Palette, ChevronRight,
-  Activity, Zap
+  Activity, Zap, Brain
 } from 'lucide-react'
 import {
   dashboard as dashboardApi,
