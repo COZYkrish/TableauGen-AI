@@ -1,0 +1,236 @@
+<?xml version="1.0" ?>
+<workbook xmlns:user="http://www.tableausoftware.com/xml/user" source-build="2021.1.0" source-platform="win" version="18.1">
+  <preferences>
+    <color-palette name="TableauGen Theme" type="regular">
+      <color>#1A3A5C</color>
+      <color>#C9973A</color>
+      <color>#2E6DA4</color>
+      <color>#E8B84B</color>
+      <color>#4A90D9</color>
+      <color>#F5C842</color>
+      <color>#7FB3D3</color>
+      <color>#8B6914</color>
+    </color-palette>
+  </preferences>
+  <datasources>
+    <datasource hasconnection="false" inline="true" name="TableauGenData">
+      <connection class="textscan" filename="C:\Users\dolis\AppData\Local\Temp\tmpsv85j9yp.csv" filetype="csv">
+        <relation name="tmpsv85j9yp.csv" table="[tmpsv85j9yp#csv]" type="table"/>
+      </connection>
+      <column caption="Region" datatype="string" name="[Region]" role="dimension" type="nominal">
+        <geographic-role>country</geographic-role>
+      </column>
+      <column caption="Category" datatype="string" name="[Category]" role="dimension" type="nominal"/>
+      <column caption="Revenue" datatype="real" name="[Revenue]" role="measure" type="quantitative" aggregation="Sum">
+        <number-format attrib="default-number-format" fmt="$#,##0.00"/>
+      </column>
+      <column caption="Units" datatype="real" name="[Units]" role="measure" type="quantitative" aggregation="Sum"/>
+      <column caption="Order_Date" datatype="string" name="[Order_Date]" role="dimension" type="nominal"/>
+      <column caption="Total Revenue" datatype="real" name="[Calc_revenue_sum]" role="measure" type="quantitative">
+        <calculation class="tableau" formula="SUM([Revenue])"/>
+      </column>
+      <column caption="Total Units" datatype="real" name="[Calc_units_sum]" role="measure" type="quantitative">
+        <calculation class="tableau" formula="SUM([Units])"/>
+      </column>
+      <column caption="Average Revenue" datatype="real" name="[Calc_revenue_avg]" role="measure" type="quantitative">
+        <calculation class="tableau" formula="AVG([Revenue])"/>
+      </column>
+      <column caption="Average Units" datatype="real" name="[Calc_units_avg]" role="measure" type="quantitative">
+        <calculation class="tableau" formula="AVG([Units])"/>
+      </column>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name="KPI Total Revenue">
+      <table>
+        <view>
+          <rows/>
+          <cols/>
+          <mark class="Text"/>
+          <encoding>
+            <text field="[Revenue]" type="quantitative"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="mark">
+          <format attr="size" value="32"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="KPI Total Units">
+      <table>
+        <view>
+          <rows/>
+          <cols/>
+          <mark class="Text"/>
+          <encoding>
+            <text field="[Units]" type="quantitative"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="mark">
+          <format attr="size" value="32"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="KPI Average Revenue">
+      <table>
+        <view>
+          <rows/>
+          <cols/>
+          <mark class="Text"/>
+          <encoding>
+            <text field="[Revenue]" type="quantitative"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="mark">
+          <format attr="size" value="32"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="KPI Average Units">
+      <table>
+        <view>
+          <rows/>
+          <cols/>
+          <mark class="Text"/>
+          <encoding>
+            <text field="[Units]" type="quantitative"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="mark">
+          <format attr="size" value="32"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="Revenue by Region">
+      <table>
+        <view>
+          <rows>SUM([Revenue])</rows>
+          <cols>[Region]</cols>
+          <mark class="Bar"/>
+          <encoding>
+            <color field="[Region]"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="pane">
+          <format attr="background-color" value="#0F2337"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="Revenue vs Units">
+      <table>
+        <view>
+          <rows>SUM([Units])</rows>
+          <cols>SUM([Revenue])</cols>
+          <mark class="Circle"/>
+          <encoding>
+            <color field="[Region]"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="pane">
+          <format attr="background-color" value="#0F2337"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="Revenue by Region">
+      <table>
+        <view>
+          <rows>Latitude (generated)</rows>
+          <cols>Longitude (generated)</cols>
+          <mark class="Map"/>
+          <encoding>
+            <color field="[Revenue]"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="pane">
+          <format attr="background-color" value="#0F2337"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="Revenue by Category">
+      <table>
+        <view>
+          <rows>SUM([Revenue])</rows>
+          <cols>[Category]</cols>
+          <mark class="Bar"/>
+          <encoding>
+            <color field="[Category]"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="pane">
+          <format attr="background-color" value="#0F2337"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="Revenue Breakdown by Category">
+      <table>
+        <view>
+          <rows/>
+          <cols/>
+          <mark class="Square"/>
+          <encoding>
+            <color field="[Category]"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="pane">
+          <format attr="background-color" value="#0F2337"/>
+        </style-rule>
+      </style>
+    </worksheet>
+    <worksheet name="Revenue Distribution by Region">
+      <table>
+        <view>
+          <rows/>
+          <cols/>
+          <mark class="Pie"/>
+          <encoding>
+            <color field="[Region]"/>
+          </encoding>
+        </view>
+      </table>
+      <style>
+        <style-rule element="pane">
+          <format attr="background-color" value="#0F2337"/>
+        </style-rule>
+      </style>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name="Test Dashboard">
+      <size maxheight="1080" maxwidth="1920" minheight="600" minwidth="800"/>
+      <zones>
+        <zone id="1" type="layout-basic" x="0" y="0" w="1920" h="1080">
+          <zone id="2" type="layout-flow" h="1080" w="1920">
+            <zone id="10" name="KPI Total Revenue" type="sheet" h="200" w="1920"/>
+            <zone id="11" name="KPI Total Units" type="sheet" h="200" w="1920"/>
+            <zone id="12" name="KPI Average Revenue" type="sheet" h="200" w="1920"/>
+            <zone id="13" name="KPI Average Units" type="sheet" h="200" w="1920"/>
+            <zone id="14" name="Revenue by Region" type="sheet" h="200" w="1920"/>
+            <zone id="15" name="Revenue vs Units" type="sheet" h="200" w="1920"/>
+            <zone id="16" name="Revenue by Region" type="sheet" h="200" w="1920"/>
+            <zone id="17" name="Revenue by Category" type="sheet" h="200" w="1920"/>
+            <zone id="18" name="Revenue Breakdown by Category" type="sheet" h="200" w="1920"/>
+            <zone id="19" name="Revenue Distribution by Region" type="sheet" h="200" w="1920"/>
+          </zone>
+        </zone>
+      </zones>
+    </dashboard>
+  </dashboards>
+</workbook>
