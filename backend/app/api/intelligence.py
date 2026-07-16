@@ -23,6 +23,7 @@ import pandas as pd
 
 from app.core.database import get_db
 from app.core.deps import get_current_user
+from app.core.cache import intelligence_cache
 from app.models.user import User
 from app.models.project import Project
 from app.services.dataset_profiler.profiler import DatasetProfiler
@@ -169,7 +170,7 @@ def get_full_intelligence(
 ):
     """
     Run all intelligence engines and return a combined report.
-    This is the primary endpoint for the Intelligence panel in the UI.
+    Results are cached for 5 minutes per project.
     """
     project = _get_project(project_id, current_user.id, db)
 
@@ -178,6 +179,12 @@ def get_full_intelligence(
             status_code=400,
             detail="No blueprint found. Run POST /dashboard/{id}/generate first.",
         )
+
+    cache_key = f"intel:{current_user.id}:{project_id}:{horizon}"
+    cached = intelligence_cache.get(cache_key)
+    if cached is not None:
+        logger.debug(f"Intelligence cache hit: project {project_id}")
+        return cached
 
     try:
         profile, metadata = _load_pipeline(project)
@@ -193,9 +200,11 @@ def get_full_intelligence(
         logger.error(f"Full Intelligence failed for project {project_id}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-    return {
+    result = {
         "project_id": project_id,
         "insights": insights,
         "forecasts": forecasts,
         "narrative": narrative,
     }
+    intelligence_cache.set(cache_key, result)
+    return result

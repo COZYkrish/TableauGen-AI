@@ -26,10 +26,36 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.APP_NAME,
         version=settings.APP_VERSION,
-        description="Upload any CSV. Generate Professional Tableau Dashboards in Minutes.",
+        description=(
+            "## TableauGen AI\n\n"
+            "Upload any CSV and generate a production-ready **Tableau Packaged Workbook (.twbx)** "
+            "with AI-powered chart recommendations, KPI cards, statistical insights, and forecasts.\n\n"
+            "### Pipeline\n"
+            "1. **Upload** — CSV ingestion with type detection\n"
+            "2. **Profile** — Statistical profiling of all columns\n"
+            "3. **Metadata** — Semantic type inference (currency, geography, dates)\n"
+            "4. **Recommend** — AI-scored chart recommendations\n"
+            "5. **Plan** — Dashboard Blueprint with grid layout and themes\n"
+            "6. **Generate** — Valid `.twb` XML (Tableau 2021.1+)\n"
+            "7. **Export** — Packaged `.twbx` with embedded data\n\n"
+            "### Intelligence\n"
+            "- **Insights** — Distribution, correlation, trend, quality alerts\n"
+            "- **Forecast** — Linear / moving-average / seasonal projections\n"
+            "- **Narrative** — Auto-generated executive summaries and action items"
+        ),
         docs_url="/api/docs",
         redoc_url="/api/redoc",
+        openapi_tags=[
+            {"name": "Health", "description": "Service health check"},
+            {"name": "Authentication", "description": "Signup, login, JWT management"},
+            {"name": "Projects", "description": "Project CRUD, stats, export history"},
+            {"name": "Uploads", "description": "CSV upload and dataset profiling"},
+            {"name": "Dashboard", "description": "Blueprint generation, Tableau export (.twbx)"},
+            {"name": "Intelligence", "description": "Insights, forecasting, and narrative AI engines"},
+        ],
+        license_info={"name": "MIT"},
     )
+
 
     # CORS ----------------------------------------------------------------
     app.add_middleware(
