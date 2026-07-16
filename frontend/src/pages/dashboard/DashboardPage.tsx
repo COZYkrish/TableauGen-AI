@@ -347,6 +347,14 @@ export default function DashboardPage() {
           </p>
         </div>
 
+        {/* Intelligence button */}
+        <button
+          onClick={() => navigate(`/app/intelligence/${pid}`)}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium glass hover:bg-white/5 border border-[var(--color-accent)]/20 text-[var(--color-accent)] hover:border-[var(--color-accent)]/40 transition-all"
+        >
+          <Brain className="w-4 h-4" /> AI Insights
+        </button>
+
         {/* Export button */}
         <AnimatePresence mode="wait">
           {stage === 'exported' && exportData ? (
