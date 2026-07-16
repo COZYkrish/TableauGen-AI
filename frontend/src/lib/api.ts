@@ -209,3 +209,63 @@ export const dashboard = {
   downloadUrl: (projectId: number) => `/api/dashboard/${projectId}/download`,
 }
 
+// ── Intelligence ──────────────────────────────────────────────────────────────
+
+export interface Insight {
+  id: string
+  type: 'distribution' | 'correlation' | 'trend' | 'concentration' | 'quality'
+  severity: 'info' | 'warning' | 'critical'
+  title: string
+  description: string
+  fields: string[]
+  metric: number | null
+}
+
+export interface ForecastPoint {
+  period: string
+  value: number
+  lower_bound?: number
+  upper_bound?: number
+}
+
+export interface HistoricalPoint { period: string; value: number }
+
+export interface Forecast {
+  measure: string
+  date_field: string
+  method: string
+  historical: HistoricalPoint[]
+  forecast: ForecastPoint[]
+  trend_direction: 'up' | 'down' | 'flat'
+  growth_rate_pct: number
+  confidence: 'high' | 'medium' | 'low'
+}
+
+export interface NarrativeSection { title: string; body: string }
+
+export interface Narrative {
+  headline: string
+  executive_summary: string
+  data_story: NarrativeSection[]
+  chart_rationales: Array<{ chart_title: string; chart_type: string; score: number; narrative: string }>
+  kpi_narratives: Array<{ kpi_id: string; kpi_title: string; narrative: string }>
+  action_items: string[]
+}
+
+export interface IntelligenceReport {
+  project_id: number
+  insights: Insight[]
+  forecasts: Forecast[]
+  narrative: Narrative
+}
+
+export const intelligence = {
+  full: (projectId: number, horizon = 6) =>
+    request<IntelligenceReport>(`/intelligence/${projectId}/full?horizon=${horizon}`),
+  insights: (projectId: number) =>
+    request<{ insights: Insight[] }>(`/intelligence/${projectId}/insights`),
+  forecast: (projectId: number, horizon = 6) =>
+    request<{ forecasts: Forecast[] }>(`/intelligence/${projectId}/forecast?horizon=${horizon}`),
+  narrative: (projectId: number) =>
+    request<{ project_id: number } & Narrative>(`/intelligence/${projectId}/narrative`),
+}
