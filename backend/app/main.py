@@ -8,7 +8,7 @@ from loguru import logger
 
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api import auth, projects, uploads, health
+from app.api import auth, projects, uploads, health, dashboard
 
 # Import models so Base.metadata knows about them
 from app.models import user, project  # noqa: F401
@@ -45,6 +45,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
     app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
     app.include_router(uploads.router, prefix="/api/uploads", tags=["Uploads"])
+    app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
 
     # Startup: create tables -----------------------------------------------
     @app.on_event("startup")
