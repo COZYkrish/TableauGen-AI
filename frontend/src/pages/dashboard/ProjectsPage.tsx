@@ -66,6 +66,8 @@ export default function ProjectsPage() {
                     navigate(`/app/profile/${project.id}`)
                   } else if (project.status === 'profiled') {
                     navigate(`/app/profile/${project.id}`)
+                  } else if (project.status === 'ready' || project.status === 'exported') {
+                    navigate(`/app/dashboard/${project.id}`)
                   }
                 }}
               >
