@@ -10,11 +10,13 @@ import {
 } from 'lucide-react'
 import {
   dashboard as dashboardApi,
+  getToken,
   type BlueprintResponse,
   type ChartRecommendation,
   type KPICard,
   type ThemeSummary
 } from '@/lib/api'
+import { Container } from '@/components/Container'
 
 // ── Icon maps ────────────────────────────────────────────────────────────────
 
@@ -264,6 +266,26 @@ export default function DashboardPage() {
     }
   }
 
+  const handleDownload = async () => {
+    if (!exportData) return
+    try {
+      const token = getToken()
+      const res = await fetch(exportData.url, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
+      if (!res.ok) { setError('Download failed — please try exporting again.'); return }
+      const blob = await res.blob()
+      const blobUrl = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = blobUrl
+      a.download = exportData.fileName
+      a.click()
+      URL.revokeObjectURL(blobUrl)
+    } catch {
+      setError('Download failed — please try exporting again.')
+    }
+  }
+
   // ── Loading state ─────────────────────────────────────────────────
   if (stage === 'generating') {
     return (
@@ -327,7 +349,7 @@ export default function DashboardPage() {
   const { kpis, recommendations, filters, available_themes, metadata_summary } = blueprint
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <Container>
       {/* ── Header ──────────────────────────────────────────────────── */}
       <div className="flex items-center gap-4 mb-8">
         <button
@@ -358,16 +380,15 @@ export default function DashboardPage() {
         {/* Export button */}
         <AnimatePresence mode="wait">
           {stage === 'exported' && exportData ? (
-            <motion.a
+            <motion.button
               key="download"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              href={exportData.url}
-              download={exportData.fileName}
+              onClick={handleDownload}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-[var(--color-success)] hover:opacity-90 transition-opacity"
             >
               <Download className="w-4 h-4" /> Download .twbx
-            </motion.a>
+            </motion.button>
           ) : stage === 'exporting' ? (
             <motion.button
               key="exporting"
@@ -554,7 +575,7 @@ export default function DashboardPage() {
                 recommendations.reduce((acc, r) => {
                   acc.set(r.chart_type, (acc.get(r.chart_type) || 0) + 1)
                   return acc
-                }, new Map<string, number>())
+                }, new globalThis.Map<string, number>())
               ).map(([type, count]) => {
                 const Icon = CHART_ICONS[type] || BarChart3
                 const color = CHART_TYPE_COLORS[type] || 'var(--color-primary)'
@@ -592,6 +613,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }

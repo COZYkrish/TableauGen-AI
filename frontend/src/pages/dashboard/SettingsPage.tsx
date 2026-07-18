@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { auth, projects as projectsApi, clearToken, type UserResponse, type ProjectStats } from '@/lib/api'
 import { useNavigate } from 'react-router-dom'
+import { Container } from '@/components/Container'
 
 export default function SettingsPage() {
   const navigate = useNavigate()
@@ -66,7 +67,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <Container size="sm">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -269,6 +270,6 @@ export default function SettingsPage() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </Container>
   )
 }

@@ -211,16 +211,12 @@ class TableauGenerator:
             geo = ET.SubElement(el, "geographic-role")
             geo.text = col.get("geo_role", "country")
 
-        # Display format
+        # Number format: stored as attribute on <column>, NOT as a child element
         display_format = col.get("display_format", "")
         if display_format == "currency":
-            fmt = ET.SubElement(el, "number-format")
-            fmt.set("attrib", "default-number-format")
-            fmt.set("fmt", "$#,##0.00")
+            el.set("default-number-format", "$#,##0.00")
         elif display_format == "percentage":
-            fmt = ET.SubElement(el, "number-format")
-            fmt.set("attrib", "default-number-format")
-            fmt.set("fmt", "0.00%")
+            el.set("default-number-format", "0.00%")
 
         return el
 
@@ -231,24 +227,24 @@ class TableauGenerator:
         ws.set("name", sheet_name)
 
         table = ET.SubElement(ws, "table")
-        view = ET.SubElement(table, "view")
 
-        # Text mark showing the KPI value
-        rows = ET.SubElement(view, "rows")
-        rows.text = ""
-        cols = ET.SubElement(view, "cols")
-        cols.text = ""
+        # Empty <view/> required before rows/cols per Tableau schema
+        ET.SubElement(table, "view")
 
-        marks = ET.SubElement(view, "mark")
-        marks.set("class", "Text")
+        # Empty shelves for a text/KPI card
+        rows_el = ET.SubElement(table, "rows")
+        rows_el.text = ""
+        cols_el = ET.SubElement(table, "cols")
+        cols_el.text = ""
 
-        # Encoding: text label = KPI formula result
-        encoding = ET.SubElement(view, "encoding")
-        text_enc = ET.SubElement(encoding, "text")
-        text_enc.set("field", f"[{kpi['field']}]")
-        text_enc.set("type", "quantitative")
+        # Panes — mark lives inside pane, not inside view
+        panes = ET.SubElement(table, "panes")
+        pane = ET.SubElement(panes, "pane")
+        mark = ET.SubElement(pane, "mark")
+        mark.set("class", "Text")
 
-        style = ET.SubElement(ws, "style")
+        # Style inside table
+        style = ET.SubElement(table, "style")
         rule = ET.SubElement(style, "style-rule")
         rule.set("element", "mark")
         fmt = ET.SubElement(rule, "format")
@@ -264,86 +260,76 @@ class TableauGenerator:
         ws.set("name", sheet_name)
 
         table = ET.SubElement(ws, "table")
-        view = ET.SubElement(table, "view")
+
+        # Required empty <view/> before rows/cols
+        ET.SubElement(table, "view")
 
         tc = rec.get("tableau_config", {})
         mark_type = MARK_TYPE_MAP.get(tc.get("mark_type", "Bar"), "Bar")
         chart_type = rec.get("chart_type", "bar")
 
-        # ── Rows / Columns (shelf assignments) ───────────────────────
+        # ── Rows / Columns shelf assignments ─────────────────────────
         rows_field = tc.get("rows", "")
         cols_field = tc.get("columns", "")
 
         if chart_type == "bar":
-            # Bar: dimension on columns, measure on rows
             measure = rec["fields"].get("measure", "")
             dim = rec["fields"].get("dimension", "")
-            rows_el = ET.SubElement(view, "rows")
+            rows_el = ET.SubElement(table, "rows")
             rows_el.text = f"SUM([{measure}])" if measure else ""
-            cols_el = ET.SubElement(view, "cols")
+            cols_el = ET.SubElement(table, "cols")
             cols_el.text = f"[{dim}]" if dim else ""
 
         elif chart_type == "line":
             measure = rec["fields"].get("measure", "")
             date = rec["fields"].get("date", "")
             granularity = tc.get("date_granularity", "Month")
-            rows_el = ET.SubElement(view, "rows")
+            rows_el = ET.SubElement(table, "rows")
             rows_el.text = f"SUM([{measure}])" if measure else ""
-            cols_el = ET.SubElement(view, "cols")
+            cols_el = ET.SubElement(table, "cols")
             cols_el.text = f"DATETRUNC('{granularity.lower()}', [{date}])" if date else ""
 
         elif chart_type == "scatter":
             x = rec["fields"].get("x", "")
             y = rec["fields"].get("y", "")
-            rows_el = ET.SubElement(view, "rows")
+            rows_el = ET.SubElement(table, "rows")
             rows_el.text = f"SUM([{y}])" if y else ""
-            cols_el = ET.SubElement(view, "cols")
+            cols_el = ET.SubElement(table, "cols")
             cols_el.text = f"SUM([{x}])" if x else ""
 
         elif chart_type == "pie":
-            measure = rec["fields"].get("measure", "")
-            dim = rec["fields"].get("dimension", "")
-            rows_el = ET.SubElement(view, "rows")
+            rows_el = ET.SubElement(table, "rows")
             rows_el.text = ""
-            cols_el = ET.SubElement(view, "cols")
+            cols_el = ET.SubElement(table, "cols")
             cols_el.text = ""
 
         elif chart_type == "map":
-            geo = rec["fields"].get("geography", "")
-            measure = rec["fields"].get("measure", "")
-            rows_el = ET.SubElement(view, "rows")
+            rows_el = ET.SubElement(table, "rows")
             rows_el.text = "Latitude (generated)"
-            cols_el = ET.SubElement(view, "cols")
+            cols_el = ET.SubElement(table, "cols")
             cols_el.text = "Longitude (generated)"
 
         elif chart_type == "treemap":
-            measure = rec["fields"].get("measure", "")
-            parent = rec["fields"].get("parent_dimension", "")
-            rows_el = ET.SubElement(view, "rows")
+            rows_el = ET.SubElement(table, "rows")
             rows_el.text = ""
-            cols_el = ET.SubElement(view, "cols")
+            cols_el = ET.SubElement(table, "cols")
             cols_el.text = ""
 
         else:
-            rows_el = ET.SubElement(view, "rows")
+            rows_el = ET.SubElement(table, "rows")
             rows_el.text = rows_field
-            cols_el = ET.SubElement(view, "cols")
+            cols_el = ET.SubElement(table, "cols")
             cols_el.text = cols_field
 
-        # ── Mark type ────────────────────────────────────────────────
-        mark = ET.SubElement(view, "mark")
+        # ── Panes — mark lives inside pane ───────────────────────────
+        panes = ET.SubElement(table, "panes")
+        pane = ET.SubElement(panes, "pane")
+        mark = ET.SubElement(pane, "mark")
         mark.set("class", mark_type)
 
-        # ── Color encoding ───────────────────────────────────────────
-        color_field = tc.get("color") or rec.get("fields", {}).get("color")
-        if color_field:
-            encoding = ET.SubElement(view, "encoding")
-            color_enc = ET.SubElement(encoding, "color")
-            color_enc.set("field", f"[{color_field}]")
-
-        # ── Style: background ────────────────────────────────────────
+        # ── Style inside table ────────────────────────────────────────
         bg_color = self.theme.get("worksheet_background", "#FFFFFF")
-        style = ET.SubElement(ws, "style")
+        style = ET.SubElement(table, "style")
         bg_rule = ET.SubElement(style, "style-rule")
         bg_rule.set("element", "pane")
         bg_fmt = ET.SubElement(bg_rule, "format")
@@ -365,31 +351,38 @@ class TableauGenerator:
         size_el.set("minheight", "600")
         size_el.set("minwidth", "800")
 
-        # Zones (simple vertical stacking for compatibility)
+        # Outer container zone
         zones = ET.SubElement(db, "zones")
-        zone = ET.SubElement(zones, "zone")
-        zone.set("id", "1")
-        zone.set("type", "layout-basic")
-        zone.set("x", "0")
-        zone.set("y", "0")
-        zone.set("w", "1920")
-        zone.set("h", "1080")
+        outer_zone = ET.SubElement(zones, "zone")
+        outer_zone.set("id", "1")
+        outer_zone.set("type", "layout-basic")
+        outer_zone.set("x", "0")
+        outer_zone.set("y", "0")
+        outer_zone.set("w", "1920")
+        outer_zone.set("h", "1080")
 
-        sub_zones = ET.SubElement(zone, "zone")
-        sub_zones.set("id", "2")
-        sub_zones.set("type", "layout-flow")
-        sub_zones.set("h", "1080")
-        sub_zones.set("w", "1920")
+        # Inner flow zone
+        flow_zone = ET.SubElement(outer_zone, "zone")
+        flow_zone.set("id", "2")
+        flow_zone.set("type", "layout-flow")
+        flow_zone.set("x", "0")
+        flow_zone.set("y", "0")
+        flow_zone.set("w", "1920")
+        flow_zone.set("h", "1080")
+        flow_zone.set("direction", "vertical")
 
-        # Add each sheet as a zone
-        height_per_sheet = max(200, 1080 // max(len(sheet_names), 1))
+        # Sheet zones — stacked vertically, type="view" (not "sheet")
+        n = max(len(sheet_names), 1)
+        h_each = 1080 // n
         for i, sheet_name in enumerate(sheet_names):
-            sheet_zone = ET.SubElement(sub_zones, "zone")
+            sheet_zone = ET.SubElement(flow_zone, "zone")
             sheet_zone.set("id", str(10 + i))
             sheet_zone.set("name", sheet_name)
-            sheet_zone.set("type", "sheet")
-            sheet_zone.set("h", str(height_per_sheet))
+            sheet_zone.set("type", "view")   # "view" is valid; "sheet" is not in DTD
+            sheet_zone.set("x", "0")
+            sheet_zone.set("y", str(i * h_each))
             sheet_zone.set("w", "1920")
+            sheet_zone.set("h", str(h_each))
 
         return db
 

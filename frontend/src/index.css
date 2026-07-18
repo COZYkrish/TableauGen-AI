@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 /* ── Design Tokens ──────────────────────────────────────────────────────── */
 @theme {
   --color-primary: #2563EB;
@@ -27,10 +28,10 @@
 }
 
 /* ── Base ────────────────────────────────────────────────────────────────── */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 }
 
 html {
@@ -44,6 +45,7 @@ body {
   background-color: var(--color-bg-deep);
   color: var(--color-text-primary);
   line-height: 1.6;
+  width: 100%;
   overflow-x: hidden;
 }
 

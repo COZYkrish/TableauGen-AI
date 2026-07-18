@@ -1,3 +1,6 @@
+import { Container } from '@/components/Container'
+import { Section } from '@/components/Section'
+import { Layout } from '@/components/Layout'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
@@ -12,7 +15,7 @@ const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number = 0) => ({
     opacity: 1, y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }
   }),
 }
 
@@ -30,7 +33,7 @@ function Navbar() {
       transition={{ duration: 0.5 }}
       className="fixed top-0 left-0 right-0 z-50 glass-strong"
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <Container className="h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
@@ -61,7 +64,7 @@ function Navbar() {
         <button onClick={() => setOpen(!open)} className="md:hidden text-white">
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
-      </div>
+      </Container>
 
       {/* Mobile menu */}
       {open && (
@@ -86,7 +89,7 @@ function Navbar() {
 /* ─── Hero ─────────────────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
+    <Section id="hero" background="none" className="mt-16 pt-16 md:pt-20 lg:pt-28 pb-20 lg:pb-28">
       {/* Background grid */}
       <div className="absolute inset-0 opacity-[0.04]"
         style={{
@@ -95,16 +98,17 @@ function Hero() {
         }}
       />
 
-      {/* Gradient orbs */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[var(--color-primary)] rounded-full blur-[150px] opacity-20" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-[var(--color-accent)] rounded-full blur-[150px] opacity-15" />
+      {/* Gradient orbs — contained within section clip */}
+      <div className="absolute top-[15%] left-1/2 w-96 h-96 bg-[var(--color-primary)] rounded-full blur-[150px] opacity-20 -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-[15%] left-1/2 w-96 h-96 bg-[var(--color-accent)] rounded-full blur-[150px] opacity-15 -translate-x-1/2 translate-y-1/2" />
 
-      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
-        {/* Left — Copy */}
+      <Container className="flex flex-col items-center relative z-10 text-center">
+        {/* Copy */}
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
+          className="flex flex-col items-center max-w-3xl"
         >
           <motion.div variants={fadeUp} custom={0}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs font-medium text-[var(--color-accent)] mb-6"
@@ -114,7 +118,7 @@ function Hero() {
           </motion.div>
 
           <motion.h1 variants={fadeUp} custom={1}
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] tracking-tight mb-6"
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-6 max-w-2xl mx-auto"
           >
             Generate Professional{' '}
             <span className="gradient-text">Tableau Dashboards</span>{' '}
@@ -122,14 +126,14 @@ function Hero() {
           </motion.h1>
 
           <motion.p variants={fadeUp} custom={2}
-            className="text-base sm:text-lg text-[var(--color-text-secondary)] max-w-xl mb-8 leading-relaxed"
+            className="text-base sm:text-lg text-[var(--color-text-secondary)] max-w-xl mb-8 leading-relaxed mx-auto"
           >
             Upload any CSV. Let TableauGen AI analyze your data,
             recommend the best visualizations, generate KPIs,
             and export a polished Tableau dashboard in minutes.
           </motion.p>
 
-          <motion.div variants={fadeUp} custom={3} className="flex flex-wrap gap-4">
+          <motion.div variants={fadeUp} custom={3} className="flex flex-wrap gap-4 justify-center">
             <Link to="/signup"
               className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-white rounded-xl gradient-primary glow-primary hover:scale-[1.02] active:scale-[0.98] transition-transform"
             >
@@ -142,136 +146,134 @@ function Hero() {
             </a>
           </motion.div>
 
-          <motion.div variants={fadeUp} custom={4} className="mt-10 flex items-center gap-6 text-xs text-[var(--color-text-muted)]">
+          <motion.div variants={fadeUp} custom={4} className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-[var(--color-text-muted)]">
             <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> No credit card</span>
             <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> Unlimited CSVs</span>
             <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> Export .twbx</span>
           </motion.div>
         </motion.div>
 
-        {/* Right — Animated Dashboard Illustration */}
+        {/* Animated Dashboard Illustration */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.94, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative hidden lg:block"
+          className="relative w-full max-w-3xl mt-16 md:mt-20 lg:mt-24 px-6 md:px-0"
         >
-          <div className="relative w-full aspect-[4/3]">
-            {/* Main dashboard card */}
-            <div className="absolute inset-0 rounded-2xl glass glow-primary overflow-hidden">
-              {/* Header bar */}
-              <div className="h-10 bg-[var(--color-bg-surface)] flex items-center px-4 gap-2">
-                <div className="w-3 h-3 rounded-full bg-[var(--color-danger)] opacity-70" />
-                <div className="w-3 h-3 rounded-full bg-[var(--color-warning)] opacity-70" />
-                <div className="w-3 h-3 rounded-full bg-[var(--color-success)] opacity-70" />
-                <div className="ml-4 h-5 w-48 rounded bg-white/5" />
-              </div>
-
-              {/* KPI row */}
-              <div className="px-5 pt-5 grid grid-cols-4 gap-3">
-                {[
-                  { label: 'Revenue', value: '$2.4M', color: 'var(--color-primary)' },
-                  { label: 'Profit', value: '$890K', color: 'var(--color-success)' },
-                  { label: 'Orders', value: '12,847', color: 'var(--color-accent)' },
-                  { label: 'Growth', value: '+24.5%', color: 'var(--color-warning)' },
-                ].map((kpi, i) => (
-                  <motion.div
-                    key={kpi.label}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 + i * 0.12 }}
-                    className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-3"
-                  >
-                    <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider">{kpi.label}</p>
-                    <p className="text-lg font-bold font-[var(--font-mono)] mt-0.5" style={{ color: kpi.color }}>{kpi.value}</p>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Chart area — stylized bars */}
-              <div className="px-5 pt-4 grid grid-cols-2 gap-3">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.3 }}
-                  className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4 h-36"
-                >
-                  <div className="flex items-end gap-1.5 h-full pb-4">
-                    {[60, 80, 45, 90, 70, 55, 85, 75, 95, 65].map((h, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ height: 0 }}
-                        animate={{ height: `${h}%` }}
-                        transition={{ delay: 1.5 + i * 0.05, duration: 0.5, ease: "easeOut" }}
-                        className="flex-1 rounded-t-sm"
-                        style={{
-                          background: `linear-gradient(to top, var(--color-primary), var(--color-accent))`,
-                          opacity: 0.7 + (i % 3) * 0.1,
-                        }}
-                      />
-                    ))}
-                  </div>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.4 }}
-                  className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4 h-36 flex items-center justify-center"
-                >
-                  {/* Donut chart */}
-                  <svg viewBox="0 0 120 120" className="w-24 h-24">
-                    <circle cx="60" cy="60" r="50" fill="none" stroke="var(--color-border)" strokeWidth="12" />
-                    <motion.circle
-                      cx="60" cy="60" r="50" fill="none" stroke="var(--color-primary)" strokeWidth="12"
-                      strokeDasharray="200 314" strokeLinecap="round"
-                      initial={{ strokeDashoffset: 314 }}
-                      animate={{ strokeDashoffset: 0 }}
-                      transition={{ delay: 1.6, duration: 1.2, ease: "easeOut" }}
-                      transform="rotate(-90 60 60)"
-                    />
-                    <motion.circle
-                      cx="60" cy="60" r="50" fill="none" stroke="var(--color-accent)" strokeWidth="12"
-                      strokeDasharray="80 314" strokeLinecap="round"
-                      initial={{ strokeDashoffset: 314 }}
-                      animate={{ strokeDashoffset: -200 }}
-                      transition={{ delay: 1.8, duration: 1, ease: "easeOut" }}
-                      transform="rotate(-90 60 60)"
-                    />
-                    <text x="60" y="58" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold" fontFamily="var(--font-mono)">68%</text>
-                    <text x="60" y="73" textAnchor="middle" fill="var(--color-text-muted)" fontSize="8">Margin</text>
-                  </svg>
-                </motion.div>
-              </div>
+          {/* Main dashboard card */}
+          <div className="relative w-full rounded-2xl glass glow-primary overflow-hidden pb-6">
+            {/* Header bar */}
+            <div className="h-10 bg-[var(--color-bg-surface)] flex items-center px-4 gap-2">
+              <div className="w-3 h-3 rounded-full bg-[var(--color-danger)] opacity-70" />
+              <div className="w-3 h-3 rounded-full bg-[var(--color-warning)] opacity-70" />
+              <div className="w-3 h-3 rounded-full bg-[var(--color-success)] opacity-70" />
+              <div className="ml-4 h-5 w-48 rounded bg-white/5" />
             </div>
 
-            {/* Floating elements */}
-            <motion.div
-              animate={{ y: [-8, 8, -8] }}
-              transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-              className="absolute -top-4 -right-4 w-16 h-16 rounded-xl glass flex items-center justify-center"
-            >
-              <BarChart3 className="w-7 h-7 text-[var(--color-accent)]" />
-            </motion.div>
+            {/* KPI row */}
+            <div className="px-4 sm:px-6 pt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: 'Revenue', value: '$2.4M', color: 'var(--color-primary)' },
+                { label: 'Profit', value: '$890K', color: 'var(--color-success)' },
+                { label: 'Orders', value: '12,847', color: 'var(--color-accent)' },
+                { label: 'Growth', value: '+24.5%', color: 'var(--color-warning)' },
+              ].map((kpi, i) => (
+                <motion.div
+                  key={kpi.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + i * 0.12 }}
+                  className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-2 sm:p-3"
+                >
+                  <p className="text-[8px] sm:text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider">{kpi.label}</p>
+                  <p className="text-sm sm:text-base md:text-lg font-bold font-[var(--font-mono)] mt-0.5" style={{ color: kpi.color }}>{kpi.value}</p>
+                </motion.div>
+              ))}
+            </div>
 
-            <motion.div
-              animate={{ y: [6, -6, 6] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-3 -left-3 w-14 h-14 rounded-xl glass flex items-center justify-center"
-            >
-              <Upload className="w-6 h-6 text-[var(--color-primary)]" />
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [-5, 5, -5] }}
-              transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 2 }}
-              className="absolute top-1/3 -left-8 w-12 h-12 rounded-lg glass flex items-center justify-center"
-            >
-              <Sparkles className="w-5 h-5 text-[var(--color-warning)]" />
-            </motion.div>
+            {/* Chart area — stylized bars */}
+            <div className="px-4 sm:px-6 pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.3 }}
+                className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4 h-28 sm:h-36 md:h-48"
+              >
+                <div className="flex items-end gap-1.5 h-full pb-4">
+                  {[60, 80, 45, 90, 70, 55, 85, 75, 95, 65].map((h, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ height: 0 }}
+                      animate={{ height: `${h}%` }}
+                      transition={{ delay: 1.5 + i * 0.05, duration: 0.5, ease: "easeOut" }}
+                      className="flex-1 rounded-t-sm"
+                      style={{
+                        background: `linear-gradient(to top, var(--color-primary), var(--color-accent))`,
+                        opacity: 0.7 + (i % 3) * 0.1,
+                      }}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.4 }}
+                className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4 h-28 sm:h-36 md:h-48 flex items-center justify-center"
+              >
+                {/* Donut chart */}
+                <svg viewBox="0 0 120 120" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--color-border)" strokeWidth="12" />
+                  <motion.circle
+                    cx="60" cy="60" r="50" fill="none" stroke="var(--color-primary)" strokeWidth="12"
+                    strokeDasharray="200 314" strokeLinecap="round"
+                    initial={{ strokeDashoffset: 314 }}
+                    animate={{ strokeDashoffset: 0 }}
+                    transition={{ delay: 1.6, duration: 1.2, ease: "easeOut" }}
+                    transform="rotate(-90 60 60)"
+                  />
+                  <motion.circle
+                    cx="60" cy="60" r="50" fill="none" stroke="var(--color-accent)" strokeWidth="12"
+                    strokeDasharray="80 314" strokeLinecap="round"
+                    initial={{ strokeDashoffset: 314 }}
+                    animate={{ strokeDashoffset: -200 }}
+                    transition={{ delay: 1.8, duration: 1, ease: "easeOut" }}
+                    transform="rotate(-90 60 60)"
+                  />
+                  <text x="60" y="58" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold" fontFamily="var(--font-mono)">68%</text>
+                  <text x="60" y="73" textAnchor="middle" fill="var(--color-text-muted)" fontSize="8">Margin</text>
+                </svg>
+              </motion.div>
+            </div>
           </div>
+
+          {/* Floating elements — clamped to safe negative offsets within clipped parent */}
+          <motion.div
+            animate={{ y: [-8, 8, -8] }}
+            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+            className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 sm:w-14 sm:h-14 rounded-xl glass flex items-center justify-center"
+          >
+            <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--color-accent)]" />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [6, -6, 6] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut", delay: 1 }}
+            className="absolute -bottom-2 -left-2 sm:-bottom-3 sm:-left-3 w-9 h-9 sm:w-12 sm:h-12 rounded-xl glass flex items-center justify-center"
+          >
+            <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-primary)]" />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [-5, 5, -5] }}
+            transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 2 }}
+            className="absolute top-1/3 -left-4 sm:-left-6 w-8 h-8 sm:w-11 sm:h-11 rounded-lg glass flex items-center justify-center"
+          >
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--color-warning)]" />
+          </motion.div>
         </motion.div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
@@ -279,8 +281,8 @@ function Hero() {
 function TrustedBy() {
   const roles = ['Analysts', 'Students', 'Businesses', 'Data Scientists', 'Tableau Developers']
   return (
-    <section className="py-16 border-y border-[var(--color-border)]">
-      <div className="max-w-7xl mx-auto px-6 text-center">
+    <Section className="py-16 border-y border-[var(--color-border)]" background="none">
+      <Container className="text-center">
         <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)] mb-8">Built for</p>
         <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
           {roles.map((role, i) => (
@@ -296,8 +298,8 @@ function TrustedBy() {
             </motion.span>
           ))}
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
@@ -316,8 +318,8 @@ const features = [
 
 function Features() {
   return (
-    <section id="features" className="py-24">
-      <div className="max-w-7xl mx-auto px-6">
+    <Section id="features" background="none">
+      <Container>
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -337,25 +339,25 @@ function Features() {
           whileInView="visible"
           viewport={{ once: true, margin: "-40px" }}
           variants={stagger}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {features.map((f, i) => (
             <motion.div
               key={f.title}
               variants={fadeUp}
               custom={i}
-              className="group p-6 rounded-2xl bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-[var(--color-primary)]/5"
+              className="group p-6 rounded-2xl bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-[var(--color-primary)]/5 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-xl bg-[var(--color-primary)]/10 flex items-center justify-center mb-4 group-hover:bg-[var(--color-primary)]/20 transition-colors">
                 <f.icon className="w-5 h-5 text-[var(--color-primary)]" />
               </div>
               <h3 className="text-base font-semibold mb-2">{f.title}</h3>
-              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{f.desc}</p>
+              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed flex-grow">{f.desc}</p>
             </motion.div>
           ))}
         </motion.div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
@@ -372,8 +374,8 @@ const steps = [
 
 function Workflow() {
   return (
-    <section id="workflow" className="py-24 bg-[var(--color-bg-card)]/40">
-      <div className="max-w-4xl mx-auto px-6">
+    <Section id="workflow" background="card">
+      <Container>
         <motion.div
           initial="hidden" whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
@@ -385,9 +387,15 @@ function Workflow() {
           <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)]">Fully automated. Minimal effort.</motion.p>
         </motion.div>
 
-        <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[var(--color-primary)] via-[var(--color-accent)] to-transparent" />
+        {/* Timeline — centered, max 672px wide (42rem) */}
+        <div className="relative max-w-2xl mx-auto w-full">
+          {/* Vertical line — aligned to dot center */}
+          <div
+            className="absolute left-[11px] top-2 bottom-2 w-[1px]"
+            style={{
+              background: 'linear-gradient(to bottom, var(--color-primary), var(--color-accent), transparent)'
+            }}
+          />
 
           <div className="space-y-8">
             {steps.map((s, i) => (
@@ -397,10 +405,15 @@ function Workflow() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.5 }}
-                className="relative flex items-start gap-6 pl-14"
+                className="relative flex items-start gap-6 pl-10"
               >
-                {/* Dot */}
-                <div className="absolute left-4 top-1 w-5 h-5 rounded-full gradient-primary border-4 border-[var(--color-bg-deep)] z-10" />
+                {/* Dot — sits exactly on the vertical line */}
+                <div
+                  className="absolute left-0 top-1.5 w-[22px] h-[22px] rounded-full border-4 border-[var(--color-bg-deep)] z-10 shrink-0"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))'
+                  }}
+                />
                 <div>
                   <span className="text-xs font-mono text-[var(--color-accent)] font-semibold">{s.step}</span>
                   <h3 className="text-base font-semibold mt-0.5">{s.title}</h3>
@@ -410,16 +423,16 @@ function Workflow() {
             ))}
           </div>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
 /* ─── Dashboard Preview ───────────────────────────────────────────────────── */
 function DashboardPreview() {
   return (
-    <section id="preview" className="py-24">
-      <div className="max-w-7xl mx-auto px-6">
+    <Section id="preview" background="none">
+      <Container>
         <motion.div
           initial="hidden" whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
@@ -531,8 +544,8 @@ function DashboardPreview() {
             </div>
           </div>
         </motion.div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
@@ -545,14 +558,14 @@ const testimonials = [
 
 function Testimonials() {
   return (
-    <section className="py-24 bg-[var(--color-bg-card)]/40">
-      <div className="max-w-7xl mx-auto px-6">
+    <Section background="card">
+      <Container>
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-14">
           <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">Testimonials</motion.p>
           <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold">Loved by Data Professionals</motion.h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
@@ -560,14 +573,16 @@ function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="p-6 rounded-2xl bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-colors"
+              className="p-6 rounded-2xl bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-colors flex flex-col justify-between h-full"
             >
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: 5 }).map((_, j) => (
-                  <Star key={j} className="w-4 h-4 fill-[var(--color-warning)] text-[var(--color-warning)]" />
-                ))}
+              <div>
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: 5 }).map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-[var(--color-warning)] text-[var(--color-warning)]" />
+                  ))}
+                </div>
+                <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-5">"{t.text}"</p>
               </div>
-              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-5">"{t.text}"</p>
               <div>
                 <p className="text-sm font-semibold">{t.name}</p>
                 <p className="text-xs text-[var(--color-text-muted)]">{t.role}</p>
@@ -575,8 +590,8 @@ function Testimonials() {
             </motion.div>
           ))}
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
@@ -592,44 +607,46 @@ const faqs = [
 function FAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(null)
   return (
-    <section className="py-24">
-      <div className="max-w-3xl mx-auto px-6">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-14">
-          <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">FAQ</motion.p>
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold">Frequently Asked Questions</motion.h2>
-        </motion.div>
+    <Section id="faq" background="none">
+      <Container>
+        <div className="max-w-3xl mx-auto w-full">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-14">
+            <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">FAQ</motion.p>
+            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold">Frequently Asked Questions</motion.h2>
+          </motion.div>
 
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.06 }}
-              className="rounded-xl border border-[var(--color-border)] overflow-hidden"
-            >
-              <button
-                onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                className="w-full flex items-center justify-between p-5 text-left text-sm font-medium hover:bg-white/[0.02] transition-colors"
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                className="rounded-xl border border-[var(--color-border)] overflow-hidden"
               >
-                {faq.q}
-                <ChevronDown className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${openIdx === i ? 'rotate-180' : ''}`} />
-              </button>
-              {openIdx === i && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  className="px-5 pb-5 text-sm text-[var(--color-text-secondary)] leading-relaxed"
+                <button
+                  onClick={() => setOpenIdx(openIdx === i ? null : i)}
+                  className="w-full flex items-center justify-between p-5 text-left text-sm font-medium hover:bg-white/[0.02] transition-colors"
                 >
-                  {faq.a}
-                </motion.div>
-              )}
-            </motion.div>
-          ))}
+                  {faq.q}
+                  <ChevronDown className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${openIdx === i ? 'rotate-180' : ''}`} />
+                </button>
+                {openIdx === i && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    className="px-5 pb-5 text-sm text-[var(--color-text-secondary)] leading-relaxed"
+                  >
+                    {faq.a}
+                  </motion.div>
+                )}
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
@@ -664,15 +681,15 @@ const plans = [
 
 function Pricing() {
   return (
-    <section id="pricing" className="py-24 bg-[var(--color-bg-card)]/40">
-      <div className="max-w-7xl mx-auto px-6">
+    <Section id="pricing" background="card">
+      <Container>
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-14">
           <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">Pricing</motion.p>
           <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">Simple, Transparent Pricing</motion.h2>
           <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)]">Start free. Upgrade when you need more power.</motion.p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-3 gap-5 max-w-5xl mx-auto">
+        <div className="grid sm:grid-cols-3 gap-6">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}
@@ -680,30 +697,32 @@ function Pricing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`p-6 rounded-2xl border transition-all ${
+              className={`p-6 rounded-2xl border transition-all flex flex-col justify-between h-full ${
                 plan.highlight
-                  ? 'bg-[var(--color-bg-card)] border-[var(--color-primary)] glow-primary scale-[1.02]'
+                  ? 'bg-[var(--color-bg-card)] border-[var(--color-primary)] glow-primary hover:scale-[1.02]'
                   : 'bg-[var(--color-bg-card)] border-[var(--color-border)] hover:border-[var(--color-border-hover)]'
               }`}
             >
-              {plan.highlight && (
-                <span className="inline-block text-[10px] uppercase tracking-wider font-semibold text-[var(--color-primary)] mb-3">Most Popular</span>
-              )}
-              <h3 className="text-lg font-bold">{plan.name}</h3>
-              <div className="mt-3 mb-1">
-                <span className="text-3xl font-bold font-[var(--font-mono)]">{plan.price}</span>
-                {plan.period && <span className="text-sm text-[var(--color-text-muted)]">{plan.period}</span>}
-              </div>
-              <p className="text-xs text-[var(--color-text-secondary)] mb-6">{plan.desc}</p>
+              <div>
+                {plan.highlight && (
+                  <span className="inline-block text-[10px] uppercase tracking-wider font-semibold text-[var(--color-primary)] mb-3">Most Popular</span>
+                )}
+                <h3 className="text-lg font-bold">{plan.name}</h3>
+                <div className="mt-3 mb-1">
+                  <span className="text-3xl font-bold font-[var(--font-mono)]">{plan.price}</span>
+                  {plan.period && <span className="text-sm text-[var(--color-text-muted)]">{plan.period}</span>}
+                </div>
+                <p className="text-xs text-[var(--color-text-secondary)] mb-6">{plan.desc}</p>
 
-              <ul className="space-y-2.5 mb-8">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
-                    <Check className="w-4 h-4 text-[var(--color-success)] shrink-0" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+                <ul className="space-y-2.5 mb-8">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
+                      <Check className="w-4 h-4 text-[var(--color-success)] shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
               <Link
                 to="/signup"
@@ -718,45 +737,47 @@ function Pricing() {
             </motion.div>
           ))}
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 
 /* ─── CTA ──────────────────────────────────────────────────────────────────── */
 function CTA() {
   return (
-    <section className="py-24">
-      <div className="max-w-4xl mx-auto px-6 text-center">
-        <motion.div
-          initial="hidden" whileInView="visible"
-          viewport={{ once: true }}
-          variants={stagger}
-        >
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
-            Start Building Smarter Tableau Dashboards Today
-          </motion.h2>
-          <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)] max-w-xl mx-auto mb-8">
-            Join thousands of analysts who automate their Tableau workflows with TableauGen AI.
-          </motion.p>
-          <motion.div variants={fadeUp}>
-            <Link to="/signup"
-              className="inline-flex items-center gap-2 px-8 py-4 text-base font-semibold text-white rounded-xl gradient-primary glow-primary hover:scale-[1.02] active:scale-[0.98] transition-transform"
-            >
-              Get Started for Free <ArrowRight className="w-5 h-5" />
-            </Link>
+    <Section background="none">
+      <Container>
+        <div className="max-w-4xl mx-auto w-full text-center">
+          <motion.div
+            initial="hidden" whileInView="visible"
+            viewport={{ once: true }}
+            variants={stagger}
+          >
+            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
+              Start Building Smarter Tableau Dashboards Today
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)] max-w-xl mx-auto mb-8">
+              Join thousands of analysts who automate their Tableau workflows with TableauGen AI.
+            </motion.p>
+            <motion.div variants={fadeUp}>
+              <Link to="/signup"
+                className="inline-flex items-center gap-2 px-8 py-4 text-base font-semibold text-white rounded-xl gradient-primary glow-primary hover:scale-[1.02] active:scale-[0.98] transition-transform"
+              >
+                Get Started for Free <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </Container>
+    </Section>
   )
 }
 
 /* ─── Footer ───────────────────────────────────────────────────────────────── */
 function Footer() {
   return (
-    <footer className="border-t border-[var(--color-border)] py-10">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <footer className="border-t border-[var(--color-border)] py-10 w-full">
+      <Container className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
             <Sparkles className="w-3.5 h-3.5 text-white" />
@@ -768,7 +789,7 @@ function Footer() {
         <p className="text-xs text-[var(--color-text-muted)]">
           &copy; {new Date().getFullYear()} TableauGen AI. All rights reserved.
         </p>
-      </div>
+      </Container>
     </footer>
   )
 }
@@ -776,7 +797,7 @@ function Footer() {
 /* ─── Landing Page ─────────────────────────────────────────────────────────── */
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[var(--color-bg-deep)]">
+    <Layout>
       <Navbar />
       <Hero />
       <TrustedBy />
@@ -788,6 +809,6 @@ export default function LandingPage() {
       <Pricing />
       <CTA />
       <Footer />
-    </div>
+    </Layout>
   )
 }

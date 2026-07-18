@@ -8,6 +8,7 @@ import {
   Edit2, Check, X, Loader2
 } from 'lucide-react'
 import { projects as projectsApi, type ProjectResponse, type ProjectStats } from '@/lib/api'
+import { Container } from '@/components/Container'
 
 const STATUS_CONFIG: Record<string, { color: string; label: string; icon: typeof Eye; action: string }> = {
   uploaded: { color: 'var(--color-accent)', label: 'Uploaded', icon: Eye, action: 'Analyze' },
@@ -211,7 +212,7 @@ export default function ProjectsPage() {
   const statusOptions = ['all', ...Array.from(new Set(projectList.map(p => p.status)))]
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <Container>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -326,6 +327,6 @@ export default function ProjectsPage() {
           </button>
         </div>
       ) : null}
-    </div>
+    </Container>
   )
 }

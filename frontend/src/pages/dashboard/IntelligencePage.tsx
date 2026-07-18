@@ -11,6 +11,7 @@ import {
   intelligence as intelligenceApi,
   type IntelligenceReport, type Insight, type Forecast, type Narrative
 } from '@/lib/api'
+import { Container } from '@/components/Container'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -340,7 +341,7 @@ export default function IntelligencePage() {
   const warningCount = report?.insights.filter(i => i.severity === 'warning').length ?? 0
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <Container>
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <button
@@ -496,6 +497,6 @@ export default function IntelligencePage() {
           </AnimatePresence>
         </>
       )}
-    </div>
+    </Container>
   )
 }

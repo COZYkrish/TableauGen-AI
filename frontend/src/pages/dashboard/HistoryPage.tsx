@@ -4,8 +4,9 @@ import {
   History, Download, FileArchive, BarChart3, Columns,
   Clock, Loader2, AlertTriangle, Inbox, ExternalLink, RefreshCw
 } from 'lucide-react'
-import { projects as projectsApi, type ExportHistoryItem } from '@/lib/api'
+import { projects as projectsApi, getToken, type ExportHistoryItem } from '@/lib/api'
 import { useNavigate } from 'react-router-dom'
+import { Container } from '@/components/Container'
 
 function formatDate(iso: string | null) {
   if (!iso) return '—'
@@ -39,8 +40,23 @@ export default function HistoryPage() {
 
   useEffect(() => { load() }, [])
 
+  const downloadWithAuth = async (url: string, fileName: string) => {
+    const token = getToken()
+    const res = await fetch(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+    if (!res.ok) return
+    const blob = await res.blob()
+    const blobUrl = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = blobUrl
+    a.download = fileName
+    a.click()
+    URL.revokeObjectURL(blobUrl)
+  }
+
   return (
-    <div className="max-w-5xl mx-auto">
+    <Container>
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -201,13 +217,12 @@ export default function HistoryPage() {
                           {formatDate(item.exported_at)}
                         </td>
                         <td className="px-5 py-3">
-                          <a
-                            href={item.download_url}
-                            download
+                          <button
+                            onClick={() => downloadWithAuth(item.download_url, item.file_name || 'dashboard.twbx')}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white gradient-primary opacity-0 group-hover:opacity-100 hover:opacity-90 transition-all"
                           >
                             <Download className="w-3 h-3" /> Download
-                          </a>
+                          </button>
                         </td>
                       </motion.tr>
                     ))}
@@ -218,6 +233,6 @@ export default function HistoryPage() {
           </motion.div>
         </>
       )}
-    </div>
+    </Container>
   )
 }

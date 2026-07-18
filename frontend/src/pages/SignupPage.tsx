@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Sparkles, Eye, EyeOff, ArrowRight } from 'lucide-react'
+import { auth, setToken } from '@/lib/api'
 
 export default function SignupPage() {
   const [name, setName] = useState('')
@@ -10,11 +11,24 @@ export default function SignupPage() {
   const [showPw, setShowPw] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const navigate = useNavigate()
+  const [error, setError] = useState<string | null>(null)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    // TODO: integrate with /api/auth/signup
-    setTimeout(() => setLoading(false), 1200)
+    setError(null)
+    try {
+      await auth.signup({ email, full_name: name, password })
+      // Auto-login after signup
+      const token = await auth.login({ email, password })
+      setToken(token.access_token)
+      navigate('/app')
+    } catch (err: any) {
+      setError(err.message ?? 'Signup failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -45,6 +59,11 @@ export default function SignupPage() {
           <p className="text-sm text-[var(--color-text-muted)] text-center mb-8">Start generating dashboards in minutes</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="px-4 py-3 rounded-lg bg-[var(--color-danger)]/10 border border-[var(--color-danger)]/30 text-sm text-[var(--color-danger)]">
+                {error}
+              </div>
+            )}
             {/* Full Name */}
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">Full Name</label>

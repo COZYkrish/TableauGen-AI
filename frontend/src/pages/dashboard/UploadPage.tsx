@@ -6,6 +6,7 @@ import {
   Loader2, X, ArrowRight, FileUp
 } from 'lucide-react'
 import { uploads } from '@/lib/api'
+import { Container } from '@/components/Container'
 
 type UploadState = 'idle' | 'dragging' | 'uploading' | 'success' | 'error'
 
@@ -75,7 +76,7 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <Container size="sm">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Upload CSV</h1>
         <p className="text-sm text-[var(--color-text-secondary)] mt-1">
@@ -226,6 +227,6 @@ export default function UploadPage() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </Container>
   )
 }

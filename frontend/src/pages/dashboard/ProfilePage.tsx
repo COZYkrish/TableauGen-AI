@@ -7,6 +7,7 @@ import {
   BarChart3, AlertTriangle, Loader2, Layers
 } from 'lucide-react'
 import { uploads, type ProfileResponse } from '@/lib/api'
+import { Container } from '@/components/Container'
 
 const ROLE_ICONS: Record<string, typeof Tag> = {
   dimension: Tag,
@@ -83,7 +84,7 @@ export default function ProfilePage() {
   const { overview, columns, summary } = data
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <Container>
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <button
@@ -241,6 +242,6 @@ export default function ProfilePage() {
           </table>
         </div>
       </motion.div>
-    </div>
+    </Container>
   )
 }
