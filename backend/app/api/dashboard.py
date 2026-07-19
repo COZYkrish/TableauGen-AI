@@ -38,8 +38,7 @@ from app.schemas.dashboard import (
 from app.services.dataset_profiler.profiler import DatasetProfiler
 from app.services.metadata_engine.engine import MetadataEngine
 from app.services.dashboard_planner.planner import DashboardPlanner
-from app.plugins.tableau_generator.generator import TableauGenerator
-from app.plugins.export_manager import ExportManager
+from app.plugins.tableau_generator.pipeline.orchestrator import GeneratorPipeline
 
 import pandas as pd
 
@@ -203,33 +202,20 @@ def export_twbx(
     gen_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        generator = TableauGenerator(
-            blueprint=blueprint,
-            metadata=metadata,
+        templates_dir = Path("app/plugins/tableau_generator/templates/files")
+        pipeline = GeneratorPipeline(templates_dir)
+        
+        twbx_path = pipeline.generate(
+            project_id=str(project_id),
+            raw_columns=metadata.get("columns", metadata),
             csv_path=project.file_path,
-            output_dir=gen_dir,
-            project_name=project_name,
+            output_dir=gen_dir
         )
-        twb_path = generator.generate()
     except Exception as e:
         logger.error(f"Tableau Generator failed for project {project_id}: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Workbook generation failed: {str(e)}",
-        )
-
-    # ── Package .twbx ─────────────────────────────────────────────────
-    try:
-        export_manager = ExportManager(gen_dir)
-        twbx_path, validation = export_manager.package(
-            twb_path=twb_path,
-            csv_path=Path(project.file_path),
-            project_name=project_name,
-        )
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=str(e),
         )
 
     # ── Persist export path ───────────────────────────────────────────
@@ -244,7 +230,7 @@ def export_twbx(
         project_id=project_id,
         download_url=download_url,
         file_name=twbx_path.name,
-        validation_warnings=validation.warnings,
+        validation_warnings=[],
     )
 
 

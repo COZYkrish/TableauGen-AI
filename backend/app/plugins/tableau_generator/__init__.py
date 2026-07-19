@@ -1,3 +1,3 @@
-from app.plugins.tableau_generator.generator import TableauGenerator
+from app.plugins.tableau_generator.pipeline.orchestrator import GeneratorPipeline
 
-__all__ = ["TableauGenerator"]
+__all__ = ["GeneratorPipeline"]
