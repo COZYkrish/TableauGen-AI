@@ -138,7 +138,7 @@ export default function SignupPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Jane Doe"
+                placeholder="Name"
                 required
                 className="w-full px-4 py-3.5 rounded-xl text-white outline-none transition-all duration-300"
                 style={inputStyle}
