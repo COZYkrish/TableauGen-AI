@@ -271,17 +271,8 @@ function Scene1Hero() {
   )
 }
 
+/* ─── SCENE 2: Feature Bento Grid ────────────────────────────────────── */
 
-
-      {/* ── Navigation ─────────────────────────────────────────── */}
-      <motion.nav
-        initial={{ y: -24, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? 'glass-strong' : ''
-        }`}
-      >
         <div
           className="flex items-center justify-between px-6 md:px-12 h-16"
           style={{ maxWidth: '92vw', margin: '0 auto', width: '92vw' }}
