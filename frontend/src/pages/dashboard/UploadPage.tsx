@@ -8,6 +8,7 @@ import {
 import { uploads } from '@/lib/api'
 import { Container } from '@/components/Container'
 import GlassSurface from '@/components/GlassSurface'
+import ColorBends from '@/components/ColorBends'
 
 type UploadState = 'idle' | 'dragging' | 'uploading' | 'success' | 'error'
 
@@ -76,266 +77,291 @@ export default function UploadPage() {
   }
 
   return (
-    <Container size="sm">
-      <div className="mb-8">
-        <h1
-          className="text-2xl font-bold"
-          style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}
-        >
-          Upload CSV
-        </h1>
-        <p className="text-sm text-[var(--color-text-secondary)] mt-1" style={{ fontFamily: 'var(--font-sans)' }}>
-          Upload a CSV file to start generating your Tableau dashboard.
-        </p>
+    <div className="relative min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center py-12 overflow-hidden w-full">
+      {/* ── Background Animation ───────────────────────────────────── */}
+      <div className="absolute inset-0 z-0">
+        <ColorBends
+          colors={['#ffffff', '#a855f7', '#00ffd1']}
+          rotation={90}
+          speed={0.2}
+          scale={1}
+          frequency={1}
+          warpStrength={1}
+          mouseInfluence={1}
+          noise={0.15}
+          parallax={0.5}
+          iterations={1}
+          intensity={1.5}
+          bandWidth={6}
+          transparent={true}
+        />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
       </div>
 
-      <AnimatePresence mode="wait">
-
-        {/* ── Idle / Dragging ──────────────────────────────────────── */}
-        {(state === 'idle' || state === 'dragging') && (
-          <motion.div
-            key="dropzone"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            {/* Drag & Drop Zone wrapped in GlassSurface */}
-            <GlassSurface
-              width="100%"
-              height="auto"
-              borderRadius={20}
-              backgroundOpacity={0.06}
-              saturation={1.4}
-              distortionScale={-160}
-              brightness={55}
-              blur={14}
-              className={`w-full transition-all duration-300 ${
-                state === 'dragging' ? 'scale-[1.01]' : ''
-              }`}
-              style={{ display: 'block' }}
+      <div className="relative z-10 w-full">
+        <Container size="sm">
+          <div className="mb-8 text-center sm:text-left">
+            <h1
+              className="text-3xl font-bold text-white tracking-tight mb-2"
+              style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}
             >
-              <label
-                onDragOver={(e) => { e.preventDefault(); setState('dragging') }}
-                onDragLeave={() => setState('idle')}
-                onDrop={handleDrop}
-                className="relative flex flex-col items-center justify-center gap-4 p-16 cursor-pointer w-full"
-                style={{
-                  border: state === 'dragging'
-                    ? '2px dashed rgba(255,255,255,0.4)'
-                    : '2px dashed rgba(255,255,255,0.12)',
-                  borderRadius: '20px',
-                  transition: 'border-color 0.2s',
-                }}
+              Upload CSV
+            </h1>
+            <p className="text-sm text-white/60" style={{ fontFamily: 'var(--font-sans)' }}>
+              Upload a CSV file to start generating your Tableau dashboard.
+            </p>
+          </div>
+
+          <AnimatePresence mode="wait">
+
+            {/* ── Idle / Dragging ──────────────────────────────────────── */}
+            {(state === 'idle' || state === 'dragging') && (
+              <motion.div
+                key="dropzone"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
               >
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleInputChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-
-                {/* Icon */}
-                <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300"
-                  style={{
-                    background: state === 'dragging'
-                      ? 'rgba(255,255,255,0.15)'
-                      : 'rgba(255,255,255,0.07)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(8px)',
-                  }}
+                {/* Drag & Drop Zone wrapped in GlassSurface */}
+                <GlassSurface
+                  width="100%"
+                  height="auto"
+                  borderRadius={24}
+                  backgroundOpacity={0.03}
+                  saturation={1.5}
+                  distortionScale={-180}
+                  brightness={60}
+                  blur={20}
+                  className={`w-full transition-all duration-300 ${
+                    state === 'dragging' ? 'scale-[1.02]' : ''
+                  }`}
+                  style={{ display: 'block' }}
                 >
-                  <FileUp
-                    className="w-7 h-7 transition-transform duration-300"
+                  <label
+                    onDragOver={(e) => { e.preventDefault(); setState('dragging') }}
+                    onDragLeave={() => setState('idle')}
+                    onDrop={handleDrop}
+                    className="relative flex flex-col items-center justify-center gap-5 p-16 sm:p-20 cursor-pointer w-full"
                     style={{
-                      color: state === 'dragging' ? '#ffffff' : 'rgba(255,255,255,0.6)',
-                      transform: state === 'dragging' ? 'translateY(-2px)' : 'translateY(0)',
+                      border: state === 'dragging'
+                        ? '2px dashed rgba(255,255,255,0.6)'
+                        : '2px dashed rgba(255,255,255,0.15)',
+                      borderRadius: '24px',
+                      transition: 'border-color 0.2s',
                     }}
-                  />
-                </div>
+                  >
+                    <input
+                      type="file"
+                      accept=".csv"
+                      onChange={handleInputChange}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
 
-                <div className="text-center">
-                  <p className="text-sm font-medium text-white">
-                    {state === 'dragging' ? 'Drop your file here' : 'Drag & drop your CSV file here'}
-                  </p>
-                  <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-mono)' }}>
-                    or click to browse · up to 100MB
-                  </p>
-                </div>
-              </label>
-            </GlassSurface>
-
-            {/* File format info wrapped in GlassSurface */}
-            <GlassSurface
-              width="100%"
-              height="auto"
-              borderRadius={16}
-              backgroundOpacity={0.04}
-              saturation={1.2}
-              distortionScale={-120}
-              brightness={50}
-              blur={10}
-              className="w-full mt-4"
-              style={{ display: 'block' }}
-            >
-              <div className="flex items-start gap-3 px-5 py-4 w-full">
-                <FileSpreadsheet
-                  className="w-5 h-5 shrink-0 mt-0.5"
-                  style={{ color: 'rgba(255,255,255,0.5)' }}
-                />
-                <div
-                  className="text-xs leading-relaxed"
-                  style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'var(--font-sans)' }}
-                >
-                  <strong style={{ color: 'rgba(255,255,255,0.75)' }}>Supported format:</strong>{' '}
-                  CSV files with headers. The system auto-detects encoding (UTF-8, Latin-1, etc.),
-                  handles missing values, and strips empty rows/columns.
-                </div>
-              </div>
-            </GlassSurface>
-          </motion.div>
-        )}
-
-        {/* ── Uploading ────────────────────────────────────────────── */}
-        {state === 'uploading' && (
-          <motion.div
-            key="uploading"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <GlassSurface
-              width="100%"
-              height="auto"
-              borderRadius={20}
-              backgroundOpacity={0.06}
-              saturation={1.3}
-              distortionScale={-150}
-              className="w-full"
-              style={{ display: 'block' }}
-            >
-              <div className="text-center py-10 px-8 w-full">
-                <Loader2 className="w-10 h-10 mx-auto mb-4 animate-spin" style={{ color: 'rgba(255,255,255,0.7)' }} />
-                <p className="text-sm font-medium text-white mb-3">Uploading {file?.name}...</p>
-                <div className="w-full max-w-xs mx-auto h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                  <motion.div
-                    className="h-full rounded-full"
-                    style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.9) 100%)' }}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ ease: 'easeOut' }}
-                  />
-                </div>
-                <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.3)', fontFamily: 'var(--font-mono)' }}>
-                  {Math.round(progress)}%
-                </p>
-              </div>
-            </GlassSurface>
-          </motion.div>
-        )}
-
-        {/* ── Success ──────────────────────────────────────────────── */}
-        {state === 'success' && result && (
-          <motion.div
-            key="success"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <GlassSurface
-              width="100%"
-              height="auto"
-              borderRadius={20}
-              backgroundOpacity={0.06}
-              saturation={1.3}
-              distortionScale={-150}
-              className="w-full"
-              style={{ display: 'block' }}
-            >
-              <div className="py-10 px-8 w-full">
-                <div className="text-center mb-6">
-                  <CheckCircle2 className="w-12 h-12 mx-auto mb-3" style={{ color: 'rgba(134,239,172,0.9)' }} />
-                  <h2 className="text-lg font-bold text-white">Upload Successful!</h2>
-                  <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-mono)' }}>{result.file_name}</p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 mb-8 max-w-sm mx-auto">
-                  {[
-                    { val: result.row_count.toLocaleString(), label: 'Rows' },
-                    { val: result.column_count, label: 'Columns' },
-                  ].map((stat) => (
-                    <GlassSurface
-                      key={stat.label}
-                      width="100%"
-                      height="auto"
-                      borderRadius={12}
-                      backgroundOpacity={0.04}
-                      distortionScale={-100}
-                      className="w-full"
-                      style={{ display: 'block' }}
+                    {/* Icon */}
+                    <div
+                      className="w-20 h-20 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-xl"
+                      style={{
+                        background: state === 'dragging'
+                          ? 'rgba(255,255,255,0.2)'
+                          : 'rgba(255,255,255,0.08)',
+                        border: '1px solid rgba(255,255,255,0.15)',
+                        backdropFilter: 'blur(12px)',
+                      }}
                     >
-                      <div className="text-center py-3 px-4 w-full">
-                        <p className="text-xl font-bold text-white" style={{ fontFamily: 'var(--font-mono)' }}>{stat.val}</p>
-                        <p className="text-[10px] uppercase tracking-wider mt-0.5" style={{ color: 'rgba(255,255,255,0.35)', fontFamily: 'var(--font-mono)' }}>{stat.label}</p>
-                      </div>
-                    </GlassSurface>
-                  ))}
-                </div>
+                      <FileUp
+                        className="w-9 h-9 transition-transform duration-300"
+                        style={{
+                          color: state === 'dragging' ? '#ffffff' : 'rgba(255,255,255,0.8)',
+                          transform: state === 'dragging' ? 'translateY(-4px)' : 'translateY(0)',
+                        }}
+                      />
+                    </div>
 
-                <div className="flex items-center justify-center gap-3">
-                  <button
-                    onClick={reset}
-                    className="px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-sans)' }}
-                  >
-                    Upload Another
-                  </button>
-                  <button
-                    onClick={() => navigate(`/app/profile/${result.project_id}`)}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-black transition-opacity hover:opacity-90"
-                    style={{ background: '#ffffff', fontFamily: 'var(--font-sans)' }}
-                  >
-                    Analyze Data <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </GlassSurface>
-          </motion.div>
-        )}
+                    <div className="text-center">
+                      <p className="text-base font-semibold text-white mb-2">
+                        {state === 'dragging' ? 'Drop your file here' : 'Drag & drop your CSV file here'}
+                      </p>
+                      <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-mono)' }}>
+                        or click to browse · up to 100MB
+                      </p>
+                    </div>
+                  </label>
+                </GlassSurface>
 
-        {/* ── Error ────────────────────────────────────────────────── */}
-        {state === 'error' && (
-          <motion.div
-            key="error"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <GlassSurface
-              width="100%"
-              height="auto"
-              borderRadius={20}
-              backgroundOpacity={0.04}
-              distortionScale={-140}
-              className="w-full"
-              style={{ display: 'block', border: '1px solid rgba(252,165,165,0.2)' }}
-            >
-              <div className="text-center py-10 px-8 w-full">
-                <AlertCircle className="w-12 h-12 mx-auto mb-3" style={{ color: 'rgba(252,165,165,0.9)' }} />
-                <h2 className="text-lg font-bold text-white mb-2">Upload Failed</h2>
-                <p className="text-sm mb-6" style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'var(--font-sans)' }}>{error}</p>
-                <button
-                  onClick={reset}
-                  className="px-6 py-2.5 rounded-xl text-sm font-semibold text-black bg-white hover:opacity-90 transition-opacity"
-                  style={{ fontFamily: 'var(--font-sans)' }}
+                {/* File format info wrapped in GlassSurface */}
+                <GlassSurface
+                  width="100%"
+                  height="auto"
+                  borderRadius={16}
+                  backgroundOpacity={0.02}
+                  saturation={1.2}
+                  distortionScale={-120}
+                  brightness={50}
+                  blur={12}
+                  className="w-full mt-5"
+                  style={{ display: 'block' }}
                 >
-                  Try Again
-                </button>
-              </div>
-            </GlassSurface>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </Container>
+                  <div className="flex items-start gap-4 px-6 py-5 w-full">
+                    <FileSpreadsheet
+                      className="w-6 h-6 shrink-0 mt-0.5"
+                      style={{ color: 'rgba(255,255,255,0.6)' }}
+                    />
+                    <div
+                      className="text-xs leading-relaxed"
+                      style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-sans)' }}
+                    >
+                      <strong style={{ color: 'rgba(255,255,255,0.9)' }}>Supported format:</strong>{' '}
+                      CSV files with headers. The system auto-detects encoding (UTF-8, Latin-1, etc.),
+                      handles missing values, and strips empty rows/columns.
+                    </div>
+                  </div>
+                </GlassSurface>
+              </motion.div>
+            )}
+
+            {/* ── Uploading ────────────────────────────────────────────── */}
+            {state === 'uploading' && (
+              <motion.div
+                key="uploading"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <GlassSurface
+                  width="100%"
+                  height="auto"
+                  borderRadius={24}
+                  backgroundOpacity={0.03}
+                  saturation={1.4}
+                  distortionScale={-160}
+                  className="w-full"
+                  style={{ display: 'block' }}
+                >
+                  <div className="text-center py-16 px-8 w-full">
+                    <Loader2 className="w-12 h-12 mx-auto mb-6 animate-spin" style={{ color: 'rgba(255,255,255,0.9)' }} />
+                    <p className="text-base font-semibold text-white mb-4">Uploading {file?.name}...</p>
+                    <div className="w-full max-w-sm mx-auto h-2 rounded-full overflow-hidden shadow-inner" style={{ background: 'rgba(0,0,0,0.3)' }}>
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ background: 'linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.7) 100%)' }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ ease: 'easeOut' }}
+                      />
+                    </div>
+                    <p className="text-xs mt-3 font-bold" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-mono)' }}>
+                      {Math.round(progress)}%
+                    </p>
+                  </div>
+                </GlassSurface>
+              </motion.div>
+            )}
+
+            {/* ── Success ──────────────────────────────────────────────── */}
+            {state === 'success' && result && (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <GlassSurface
+                  width="100%"
+                  height="auto"
+                  borderRadius={24}
+                  backgroundOpacity={0.03}
+                  saturation={1.4}
+                  distortionScale={-160}
+                  className="w-full"
+                  style={{ display: 'block' }}
+                >
+                  <div className="py-12 px-8 w-full">
+                    <div className="text-center mb-8">
+                      <CheckCircle2 className="w-16 h-16 mx-auto mb-4" style={{ color: '#00ffd1', filter: 'drop-shadow(0 0 12px rgba(0, 255, 209, 0.4))' }} />
+                      <h2 className="text-2xl font-bold text-white">Upload Successful!</h2>
+                      <p className="text-sm mt-2" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-mono)' }}>{result.file_name}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-10 max-w-md mx-auto">
+                      {[
+                        { val: result.row_count.toLocaleString(), label: 'Rows' },
+                        { val: result.column_count, label: 'Columns' },
+                      ].map((stat) => (
+                        <GlassSurface
+                          key={stat.label}
+                          width="100%"
+                          height="auto"
+                          borderRadius={16}
+                          backgroundOpacity={0.02}
+                          distortionScale={-100}
+                          className="w-full shadow-lg"
+                          style={{ display: 'block' }}
+                        >
+                          <div className="text-center py-5 px-4 w-full">
+                            <p className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: 'var(--font-mono)' }}>{stat.val}</p>
+                            <p className="text-[11px] uppercase tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-mono)' }}>{stat.label}</p>
+                          </div>
+                        </GlassSurface>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                      <button
+                        onClick={reset}
+                        className="w-full sm:w-auto px-6 py-3.5 rounded-full text-sm font-semibold transition-all hover:scale-105"
+                        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#ffffff', fontFamily: 'var(--font-sans)' }}
+                      >
+                        Upload Another
+                      </button>
+                      <button
+                        onClick={() => navigate(`/app/profile/${result.project_id}`)}
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-sm font-bold text-black transition-all hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                        style={{ background: '#ffffff', fontFamily: 'var(--font-sans)' }}
+                      >
+                        Analyze Data <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </GlassSurface>
+              </motion.div>
+            )}
+
+            {/* ── Error ────────────────────────────────────────────────── */}
+            {state === 'error' && (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <GlassSurface
+                  width="100%"
+                  height="auto"
+                  borderRadius={24}
+                  backgroundOpacity={0.03}
+                  distortionScale={-140}
+                  className="w-full"
+                  style={{ display: 'block', border: '1px solid rgba(255,92,122,0.3)' }}
+                >
+                  <div className="text-center py-12 px-8 w-full">
+                    <AlertCircle className="w-16 h-16 mx-auto mb-4" style={{ color: '#ff5c7a', filter: 'drop-shadow(0 0 12px rgba(255, 92, 122, 0.4))' }} />
+                    <h2 className="text-xl font-bold text-white mb-3">Upload Failed</h2>
+                    <p className="text-sm mb-8 max-w-sm mx-auto" style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'var(--font-sans)' }}>{error}</p>
+                    <button
+                      onClick={reset}
+                      className="px-8 py-3.5 rounded-full text-sm font-bold text-black transition-all hover:scale-105"
+                      style={{ background: '#ffffff', fontFamily: 'var(--font-sans)' }}
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                </GlassSurface>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </Container>
+      </div>
+    </div>
   )
 }
+
