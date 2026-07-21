@@ -977,24 +977,8 @@ function Scene5CTA() {
   )
 }
 
+/* ─── Floating Mobile Nav ─────────────────────────────────────────────── */
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime((prev) => {
-        const { h, m, s } = prev
-        if (s > 0) return { h, m, s: s - 1 }
-        if (m > 0) return { h, m: m - 1, s: 59 }
-        if (h > 0) return { h: h - 1, m: 59, s: 59 }
-        return { h: 47, m: 59, s: 59 }
-      })
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const pad = (n: number) => String(n).padStart(2, '0')
-
-  return (
-    <div className="flex items-center justify-center gap-2 mb-8">
       <p
         className="text-[9px] uppercase tracking-[0.5em] mr-4"
         style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)' }}
