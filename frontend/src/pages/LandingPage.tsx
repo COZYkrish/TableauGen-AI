@@ -316,8 +316,8 @@ function Scene5CTA() {
       {/* Fullscreen CTA with video */}
       <section id="cta" className="relative w-full overflow-hidden" style={{ height: '100vh' }}>
         <video autoPlay muted loop playsInline preload="auto"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: 'center center', willChange: 'transform', transform: 'translateZ(0)' }}
+          className="absolute inset-0 h-full w-full"
+          style={{ objectFit: 'contain', objectPosition: 'center center', willChange: 'transform', transform: 'translateZ(0)' }}
         >
           <source src={CTA_VIDEO} type="video/mp4" />
         </video>
