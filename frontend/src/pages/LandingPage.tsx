@@ -743,9 +743,240 @@ function Scene4Testimonials() {
   )
 }
 
-/* ─── SCENE 5: Final CTA + Beta Form + Footer ────────────────────────── */
+/* ─── SCENE 5: Final CTA — Fullscreen Video + Liquid Glass ───────────── */
+const CTA_VIDEO = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260511_230229_7c9bc431-46cf-489a-948d-e8144d8eb5d4.mp4'
+
 function CountdownTimer() {
   const [time, setTime] = useState({ h: 47, m: 59, s: 59 })
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime((prev) => {
+        const { h, m, s } = prev
+        if (s > 0) return { h, m, s: s - 1 }
+        if (m > 0) return { h, m: m - 1, s: 59 }
+        if (h > 0) return { h: h - 1, m: 59, s: 59 }
+        return { h: 47, m: 59, s: 59 }
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const pad = (n: number) => String(n).padStart(2, '0')
+
+  return (
+    <div className="flex items-center gap-3 mb-5">
+      <span
+        className="text-[9px] uppercase tracking-[0.4em]"
+        style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.35)' }}
+      >
+        Beta closes in
+      </span>
+      {[pad(time.h), pad(time.m), pad(time.s)].map((val, i) => (
+        <span key={i} className="flex items-baseline gap-1">
+          <span
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(20px, 3vw, 30px)',
+              lineHeight: 1,
+              fontWeight: 400,
+              color: 'rgba(255,255,255,0.7)',
+            }}
+          >
+            {val}
+          </span>
+          {i < 2 && (
+            <span style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)', fontSize: '14px' }}>:</span>
+          )}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+function Scene5CTA() {
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (email) setSubmitted(true)
+  }
+
+  return (
+    <>
+      {/* ── Fullscreen CTA Section ──────────────────────────────── */}
+      <section
+        id="cta"
+        className="relative w-full overflow-hidden"
+        style={{ height: '100vh' }}
+      >
+        {/* Background video */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{
+            objectPosition: 'center center',
+            willChange: 'transform',
+            transform: 'translateZ(0)',
+          }}
+        >
+          <source src={CTA_VIDEO} type="video/mp4" />
+        </video>
+
+        {/* Dark gradient — heavy at bottom-left for text */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.1) 100%)',
+          }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
+          }}
+        />
+
+        {/* ── Bottom-left hero content ─────────────────────────── */}
+        <div
+          className="absolute bottom-0 left-0 z-10 px-6 sm:px-12 pb-10 sm:pb-16"
+          style={{ maxWidth: '680px' }}
+        >
+          {/* Countdown */}
+          <CountdownTimer />
+
+          {/* Headline */}
+          <h2
+            className="text-white mb-4 tracking-tight"
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(36px, 6vw, 80px)',
+              lineHeight: 1.05,
+              fontWeight: 400,
+            }}
+          >
+            Start Building
+            <br />
+            <em>Smarter Dashboards.</em>
+          </h2>
+
+          {/* Description */}
+          <p
+            className="mb-7 leading-relaxed"
+            style={{
+              fontFamily: 'var(--font-sans)',
+              color: 'rgba(255,255,255,0.55)',
+              fontSize: '15px',
+              maxWidth: '420px',
+            }}
+          >
+            Upload any CSV. TableauGen AI analyzes your data, selects the best
+            visualizations, and exports a production-ready Tableau workbook in
+            under a minute.
+          </p>
+
+          {/* Email capture */}
+          {submitted ? (
+            <div
+              className="liquid-glass rounded-full px-7 py-3.5 inline-flex items-center gap-2"
+            >
+              <span
+                className="text-white text-sm"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                ✓ You're on the list — we'll be in touch soon.
+              </span>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-3">
+              <div className="liquid-glass rounded-full flex items-center overflow-hidden">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  className="bg-transparent text-white placeholder:text-white/30 outline-none px-5 py-3 text-sm w-52 sm:w-64"
+                  style={{ fontFamily: 'var(--font-sans)' }}
+                />
+              </div>
+              <Link
+                to="/signup"
+                className="bg-white text-black text-sm font-medium px-6 py-3 rounded-full hover:bg-white/90 transition-colors whitespace-nowrap"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                Start Generating →
+              </Link>
+              <button
+                type="submit"
+                className="liquid-glass text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-white/5 transition-colors whitespace-nowrap"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                Request Access
+              </button>
+            </form>
+          )}
+
+          {/* Trust marks */}
+          <div className="flex items-center gap-6 mt-6 flex-wrap">
+            {['No credit card required', 'Cancel anytime', 'Export .twb + .twbx'].map((label) => (
+              <span
+                key={label}
+                className="text-[10px] uppercase tracking-[0.25em]"
+                style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.25)' }}
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ──────────────────────────────────────────────── */}
+      <footer style={{ background: '#080808', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div
+          className="flex flex-col sm:flex-row items-center justify-between gap-4 py-8 px-6"
+          style={{ width: '92vw', margin: '0 auto' }}
+        >
+          <span
+            className="text-xs font-bold tracking-[0.3em] uppercase text-white"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            TABLEAU<span style={{ color: 'rgba(255,255,255,0.3)' }}>GEN</span>_AI
+          </span>
+          <div className="flex items-center gap-6">
+            {['Privacy', 'Terms', 'Contact'].map((label) => (
+              <a
+                key={label}
+                href="#"
+                className="text-[10px] uppercase tracking-[0.2em] transition-colors duration-200 hover:text-white"
+                style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.25)' }}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+          <p
+            className="text-[10px] uppercase tracking-[0.2em]"
+            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)' }}
+          >
+            © {new Date().getFullYear()} TableauGen AI
+          </p>
+        </div>
+      </footer>
+    </>
+  )
+}
+
 
   useEffect(() => {
     const interval = setInterval(() => {
