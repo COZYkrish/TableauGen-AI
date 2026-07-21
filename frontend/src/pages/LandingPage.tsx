@@ -1,814 +1,1118 @@
-import { Container } from '@/components/Container'
-import { Section } from '@/components/Section'
-import { Layout } from '@/components/Layout'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
 import {
-  Upload, BarChart3, Brain, Gauge, LayoutDashboard, FileDown,
-  Lightbulb, TrendingUp, Palette, ChevronRight, Sparkles, Zap,
-  ArrowRight, Star, Check, ChevronDown, Menu, X
+  Upload, BarChart3, Brain, Gauge, LayoutDashboard,
+  FileDown, Sparkles, ArrowRight, Menu, X, ChevronDown
 } from 'lucide-react'
-import { useState } from 'react'
 
-/* ─── Animation Variants ──────────────────────────────────────────────────── */
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+/* ─── Animation Variants ─────────────────────────────────────────────── */
+const slideUp = {
+  hidden: { opacity: 0, y: 40 },
   visible: (i: number = 0) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.12,
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
   }),
 }
 
 const stagger = {
-  visible: { transition: { staggerChildren: 0.08 } }
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1 } },
 }
 
-/* ─── Navbar ──────────────────────────────────────────────────────────────── */
-function Navbar() {
-  const [open, setOpen] = useState(false)
+/* ─── SCENE 1: Navigation + Hero ─────────────────────────────────────── */
+function Scene1Hero() {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', handler)
+    return () => window.removeEventListener('scroll', handler)
+  }, [])
+
   return (
-    <motion.nav
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 glass-strong"
+    <section
+      id="hero"
+      className="relative min-h-screen flex flex-col noise-bg"
+      style={{ background: '#080808' }}
     >
-      <Container className="h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-[var(--font-heading)] text-lg font-bold tracking-tight text-white">
-            TableauGen <span className="text-[var(--color-accent)]">AI</span>
-          </span>
-        </Link>
-
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8 text-sm text-[var(--color-text-secondary)]">
-          <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="#workflow" className="hover:text-white transition-colors">How It Works</a>
-          <a href="#preview" className="hover:text-white transition-colors">Preview</a>
-          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-        </div>
-
-        <div className="hidden md:flex items-center gap-3">
-          <Link to="/login" className="px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:text-white transition-colors">
-            Log In
-          </Link>
-          <Link to="/signup" className="px-5 py-2 text-sm font-medium text-white rounded-lg gradient-primary hover:opacity-90 transition-opacity">
-            Get Started
-          </Link>
-        </div>
-
-        {/* Mobile menu toggle */}
-        <button onClick={() => setOpen(!open)} className="md:hidden text-white">
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </Container>
-
-      {/* Mobile menu */}
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          className="md:hidden glass-strong border-t border-[var(--color-border)] px-6 pb-6 pt-4 space-y-4"
-        >
-          <a href="#features" className="block text-sm text-[var(--color-text-secondary)] hover:text-white">Features</a>
-          <a href="#workflow" className="block text-sm text-[var(--color-text-secondary)] hover:text-white">How It Works</a>
-          <a href="#pricing" className="block text-sm text-[var(--color-text-secondary)] hover:text-white">Pricing</a>
-          <Link to="/login" className="block text-sm text-[var(--color-text-secondary)] hover:text-white">Log In</Link>
-          <Link to="/signup" className="block w-full text-center px-5 py-2.5 text-sm font-medium text-white rounded-lg gradient-primary">
-            Get Started
-          </Link>
-        </motion.div>
-      )}
-    </motion.nav>
-  )
-}
-
-/* ─── Hero ─────────────────────────────────────────────────────────────────── */
-function Hero() {
-  return (
-    <Section id="hero" background="none" className="mt-16 pt-16 md:pt-20 lg:pt-28 pb-20 lg:pb-28">
-      {/* Background grid */}
-      <div className="absolute inset-0 opacity-[0.04]"
+      {/* Subtle radial glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
+          background: 'radial-gradient(ellipse 70% 50% at 50% 30%, rgba(255,255,255,0.03) 0%, transparent 70%)',
         }}
       />
 
-      {/* Gradient orbs — contained within section clip */}
-      <div className="absolute top-[15%] left-1/2 w-96 h-96 bg-[var(--color-primary)] rounded-full blur-[150px] opacity-20 -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-[15%] left-1/2 w-96 h-96 bg-[var(--color-accent)] rounded-full blur-[150px] opacity-15 -translate-x-1/2 translate-y-1/2" />
+      {/* ── Navigation ─────────────────────────────────────────── */}
+      <motion.nav
+        initial={{ y: -24, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled ? 'glass-strong' : ''
+        }`}
+      >
+        <div
+          className="flex items-center justify-between px-6 md:px-12 h-16"
+          style={{ maxWidth: '92vw', margin: '0 auto', width: '92vw' }}
+        >
+          {/* Brand */}
+          <Link
+            to="/"
+            className="font-mono text-xs font-bold tracking-[0.3em] uppercase text-white"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            TABLEAU<span style={{ color: 'rgba(255,255,255,0.4)' }}>GEN</span>_AI
+          </Link>
 
-      <Container className="flex flex-col items-center relative z-10 text-center">
-        {/* Copy */}
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center gap-1">
+            {['Features', 'How It Works', 'Testimonials'].map((label) => (
+              <a
+                key={label}
+                href={`#${label.toLowerCase().replace(/\s+/g, '-')}`}
+                className="px-4 py-2 rounded-lg text-xs font-mono tracking-widest uppercase transition-all duration-300"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  color: 'rgba(255,255,255,0.5)',
+                  letterSpacing: '0.2em',
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#fff'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgba(255,255,255,0.5)'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
+                }}
+              >
+                {label}
+              </a>
+            ))}
+            <Link
+              to="/signup"
+              className="ml-4 px-5 py-2 rounded-lg text-xs font-bold tracking-widest uppercase silver-btn"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              Join Beta
+            </Link>
+          </div>
+
+          {/* Mobile Toggle */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden text-white"
+          >
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="md:hidden glass-strong border-t border-white/5 px-6 py-5 space-y-3"
+          >
+            {['Features', 'How It Works', 'Testimonials'].map((label) => (
+              <a
+                key={label}
+                href={`#${label.toLowerCase().replace(/\s+/g, '-')}`}
+                className="block text-xs font-mono uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors"
+                style={{ fontFamily: 'var(--font-mono)' }}
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </a>
+            ))}
+            <Link
+              to="/signup"
+              className="block text-center px-5 py-2.5 text-xs font-bold font-mono uppercase tracking-widest silver-btn rounded-lg"
+            >
+              Join Beta
+            </Link>
+          </motion.div>
+        )}
+      </motion.nav>
+
+      {/* ── Hero Content ───────────────────────────────────────── */}
+      <div
+        className="flex-1 flex flex-col items-center justify-center relative z-10 pt-24 pb-16 px-6"
+      >
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="flex flex-col items-center max-w-3xl"
+          className="text-center"
+          style={{ width: '92vw', maxWidth: '900px', margin: '0 auto' }}
         >
-          <motion.div variants={fadeUp} custom={0}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass text-xs font-medium text-[var(--color-accent)] mb-6"
+          {/* Overline */}
+          <motion.p
+            variants={slideUp}
+            custom={0}
+            className="text-xs tracking-[0.5em] uppercase mb-8"
+            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
           >
-            <Zap className="w-3.5 h-3.5" />
-            Powered by Intelligent Automation
-          </motion.div>
-
-          <motion.h1 variants={fadeUp} custom={1}
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight mb-6 max-w-2xl mx-auto"
-          >
-            Generate Professional{' '}
-            <span className="gradient-text">Tableau Dashboards</span>{' '}
-            Automatically
-          </motion.h1>
-
-          <motion.p variants={fadeUp} custom={2}
-            className="text-base sm:text-lg text-[var(--color-text-secondary)] max-w-xl mb-8 leading-relaxed mx-auto"
-          >
-            Upload any CSV. Let TableauGen AI analyze your data,
-            recommend the best visualizations, generate KPIs,
-            and export a polished Tableau dashboard in minutes.
+            AI-Powered Data Intelligence
           </motion.p>
 
-          <motion.div variants={fadeUp} custom={3} className="flex flex-wrap gap-4 justify-center">
-            <Link to="/signup"
-              className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-white rounded-xl gradient-primary glow-primary hover:scale-[1.02] active:scale-[0.98] transition-transform"
+          {/* Main headline — frosted glass container */}
+          <motion.div
+            variants={slideUp}
+            custom={1}
+            className="relative mb-10"
+            style={{
+              background: 'rgba(255,255,255,0.015)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: 'clamp(1.5rem, 4vw, 4rem)',
+              padding: 'clamp(2rem, 5vw, 5rem) clamp(1.5rem, 5vw, 4rem)',
+              backdropFilter: 'blur(24px)',
+            }}
+          >
+            <h1
+              className="silver-gradient-text"
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontStyle: 'italic',
+                fontSize: 'clamp(42px, 9vw, 130px)',
+                lineHeight: 0.88,
+                letterSpacing: '-0.03em',
+                fontWeight: 400,
+              }}
             >
-              Get Started <ArrowRight className="w-4 h-4" />
-            </Link>
-            <a href="#preview"
-              className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-white rounded-xl glass hover:bg-white/5 transition-colors"
-            >
-              Live Demo <ChevronRight className="w-4 h-4" />
-            </a>
+              Instant Tableau
+              <br />
+              <em style={{ fontStyle: 'italic' }}>Dashboards</em>
+              <br />
+              <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.6em' }}>
+                from any CSV.
+              </span>
+            </h1>
           </motion.div>
 
-          <motion.div variants={fadeUp} custom={4} className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-[var(--color-text-muted)]">
-            <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> No credit card</span>
-            <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> Unlimited CSVs</span>
-            <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> Export .twbx</span>
+          {/* Metadata Bar */}
+          <motion.div
+            variants={slideUp}
+            custom={2}
+            className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-12"
+          >
+            {[
+              { label: 'Input', value: 'CSV / Excel' },
+              { label: 'Output', value: '.twb / .twbx' },
+              { label: 'Speed', value: '< 60 sec' },
+              { label: 'Charts', value: 'Auto-Selected' },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="flex flex-col items-center gap-1"
+                style={{
+                  borderLeft: '1px solid rgba(255,255,255,0.1)',
+                  paddingLeft: '1.5rem',
+                }}
+              >
+                <span
+                  className="text-[10px] uppercase tracking-[0.4em]"
+                  style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
+                >
+                  {item.label}
+                </span>
+                <span
+                  className="text-sm font-semibold text-white"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  {item.value}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div variants={slideUp} custom={3} className="flex items-center justify-center gap-4 flex-wrap">
+            <Link
+              to="/signup"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-bold silver-btn"
+              style={{ fontFamily: 'var(--font-mono)', letterSpacing: '0.15em' }}
+            >
+              START GENERATING <ArrowRight className="w-4 h-4" />
+            </Link>
+            <a
+              href="#features"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-mono uppercase tracking-widest glass"
+              style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.15em' }}
+            >
+              SEE HOW <ChevronDown className="w-4 h-4" />
+            </a>
           </motion.div>
         </motion.div>
 
-        {/* Animated Dashboard Illustration */}
+        {/* Scroll indicator */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.94, y: 30 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative w-full max-w-3xl mt-16 md:mt-20 lg:mt-24 px-6 md:px-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
-          {/* Main dashboard card */}
-          <div className="relative w-full rounded-2xl glass glow-primary overflow-hidden pb-6">
-            {/* Header bar */}
-            <div className="h-10 bg-[var(--color-bg-surface)] flex items-center px-4 gap-2">
-              <div className="w-3 h-3 rounded-full bg-[var(--color-danger)] opacity-70" />
-              <div className="w-3 h-3 rounded-full bg-[var(--color-warning)] opacity-70" />
-              <div className="w-3 h-3 rounded-full bg-[var(--color-success)] opacity-70" />
-              <div className="ml-4 h-5 w-48 rounded bg-white/5" />
-            </div>
+          <span
+            className="text-[9px] uppercase tracking-[0.5em]"
+            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)' }}
+          >
+            Scroll
+          </span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+            className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent"
+          />
+        </motion.div>
+      </div>
+    </section>
+  )
+}
 
-            {/* KPI row */}
-            <div className="px-4 sm:px-6 pt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                { label: 'Revenue', value: '$2.4M', color: 'var(--color-primary)' },
-                { label: 'Profit', value: '$890K', color: 'var(--color-success)' },
-                { label: 'Orders', value: '12,847', color: 'var(--color-accent)' },
-                { label: 'Growth', value: '+24.5%', color: 'var(--color-warning)' },
-              ].map((kpi, i) => (
-                <motion.div
-                  key={kpi.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 + i * 0.12 }}
-                  className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-2 sm:p-3"
+/* ─── SCENE 2: Feature Bento Grid ────────────────────────────────────── */
+const bentoFeatures = [
+  {
+    index: '01',
+    label: 'AI ENGINE',
+    title: 'Intelligent Data Analysis',
+    desc: 'Profiles every column, detects types, semantics & relationships automatically.',
+    icon: Brain,
+    span: 'md:col-span-2',
+  },
+  {
+    index: '02',
+    label: 'VISUALIZATION',
+    title: 'Smart Chart Selection',
+    desc: 'Recommends best charts with confidence scores you can override.',
+    icon: BarChart3,
+    span: '',
+  },
+  {
+    index: '03',
+    label: 'KPI ENGINE',
+    title: 'Auto KPI Generator',
+    desc: 'Revenue, margins, growth — computed from your data automatically.',
+    icon: Gauge,
+    span: '',
+  },
+  {
+    index: '04',
+    label: 'UPLOAD',
+    title: 'Any CSV, Any Size',
+    desc: 'Drag & drop up to 100MB. Auto encoding detection. Zero friction.',
+    icon: Upload,
+    span: '',
+  },
+  {
+    index: '05',
+    label: 'LAYOUT',
+    title: 'Dashboard Blueprint',
+    desc: 'Intelligent layout planning engine builds the full dashboard structure.',
+    icon: LayoutDashboard,
+    span: '',
+  },
+  {
+    index: '06',
+    label: 'EXPORT',
+    title: 'Production Export',
+    desc: 'Download .twb and .twbx workbooks ready for Tableau Desktop or Server.',
+    icon: FileDown,
+    span: '',
+  },
+]
+
+function Scene2Features() {
+  return (
+    <section
+      id="features"
+      style={{ background: '#080808', padding: '8rem 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}
+    >
+      <div style={{ width: '92vw', margin: '0 auto' }}>
+        {/* Section Header */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          variants={stagger}
+          className="mb-16"
+        >
+          <motion.p
+            variants={slideUp}
+            className="text-[10px] uppercase tracking-[0.5em] mb-4"
+            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
+          >
+            Capabilities
+          </motion.p>
+          <motion.h2
+            variants={slideUp}
+            className="silver-gradient-text"
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(36px, 6vw, 90px)',
+              lineHeight: 0.9,
+              fontWeight: 400,
+              maxWidth: '700px',
+            }}
+          >
+            Everything automated.
+            <br />
+            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.7em' }}>
+              Nothing manual.
+            </span>
+          </motion.h2>
+        </motion.div>
+
+        {/* Bento Grid */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-40px' }}
+          variants={stagger}
+          className="grid grid-cols-1 md:grid-cols-3 gap-px"
+          style={{ border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', overflow: 'hidden' }}
+        >
+          {bentoFeatures.map((feature, i) => (
+            <motion.div
+              key={feature.index}
+              variants={slideUp}
+              custom={i}
+              className={`bento-card group p-8 flex flex-col justify-between min-h-[220px] cursor-default ${
+                i === 0 ? 'md:col-span-2' : ''
+              }`}
+              style={{
+                borderRight: '1px solid rgba(255,255,255,0.05)',
+                borderBottom: '1px solid rgba(255,255,255,0.05)',
+              }}
+            >
+              <div>
+                <p
+                  className="text-[10px] uppercase tracking-[0.4em] mb-4"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    color: 'rgba(255,255,255,0.25)',
+                  }}
                 >
-                  <p className="text-[8px] sm:text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider">{kpi.label}</p>
-                  <p className="text-sm sm:text-base md:text-lg font-bold font-[var(--font-mono)] mt-0.5" style={{ color: kpi.color }}>{kpi.value}</p>
+                  {feature.index} / {feature.label}
+                </p>
+                <h3
+                  className="silver-gradient-text mb-3"
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontStyle: 'italic',
+                    fontSize: 'clamp(26px, 3vw, 42px)',
+                    lineHeight: 0.95,
+                    fontWeight: 400,
+                  }}
+                >
+                  {feature.title}
+                </h3>
+                <p
+                  className="text-sm leading-relaxed"
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    color: 'rgba(255,255,255,0.35)',
+                    fontSize: '11px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    lineHeight: 1.8,
+                  }}
+                >
+                  {feature.desc}
+                </p>
+              </div>
+              <feature.icon
+                className="w-8 h-8 mt-6 transition-opacity duration-300 group-hover:opacity-60"
+                style={{ color: 'rgba(255,255,255,0.12)' }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── SCENE 3: Value Proposition / Member Registry ─────────────────── */
+const workflowSteps = [
+  { num: '01', title: 'Upload CSV', detail: 'Drag & drop any structured dataset.' },
+  { num: '02', title: 'AI Profiles Data', detail: 'Every column analyzed: type, semantics, relationships.' },
+  { num: '03', title: 'Dashboard Generated', detail: 'KPIs, charts, layouts — all built automatically.' },
+  { num: '04', title: 'Export & Deploy', detail: 'Download production-ready .twb or .twbx workbook.' },
+]
+
+const recentUsers = [
+  { initials: 'SC', title: 'Data Analyst · Deloitte' },
+  { initials: 'MR', title: 'BI Developer · Startup' },
+  { initials: 'ET', title: 'Product Manager · SaaS' },
+  { initials: 'JK', title: 'Data Scientist · Finance' },
+]
+
+function Scene3ValueProp() {
+  return (
+    <section
+      id="how-it-works"
+      style={{
+        background: '#0a0a0a',
+        padding: '8rem 0',
+        borderTop: '1px solid rgba(255,255,255,0.05)',
+      }}
+    >
+      <div style={{ width: '92vw', margin: '0 auto' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* Left: Steps */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-60px' }}
+            variants={stagger}
+          >
+            <motion.p
+              variants={slideUp}
+              className="text-[10px] uppercase tracking-[0.5em] mb-4"
+              style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
+            >
+              How It Works
+            </motion.p>
+            <motion.h2
+              variants={slideUp}
+              className="silver-gradient-text mb-12"
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontStyle: 'italic',
+                fontSize: 'clamp(32px, 5vw, 72px)',
+                lineHeight: 0.9,
+                fontWeight: 400,
+              }}
+            >
+              From raw data
+              <br />
+              to Tableau in
+              <br />
+              <em>60 seconds.</em>
+            </motion.h2>
+
+            <div className="space-y-8">
+              {workflowSteps.map((step, i) => (
+                <motion.div
+                  key={step.num}
+                  variants={slideUp}
+                  custom={i + 2}
+                  className="flex gap-6 group"
+                >
+                  <div
+                    className="flex-shrink-0 w-px self-stretch"
+                    style={{ background: 'rgba(255,255,255,0.08)', marginLeft: '20px' }}
+                  />
+                  <div style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: '2rem' }}>
+                    <span
+                      className="text-[9px] uppercase tracking-[0.5em] block mb-1"
+                      style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.25)' }}
+                    >
+                      Step {step.num}
+                    </span>
+                    <h3
+                      className="text-white mb-1"
+                      style={{
+                        fontFamily: 'var(--font-serif)',
+                        fontStyle: 'italic',
+                        fontSize: '22px',
+                        fontWeight: 400,
+                        lineHeight: 1.1,
+                      }}
+                    >
+                      {step.title}
+                    </h3>
+                    <p
+                      className="text-[11px] uppercase tracking-wider"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        color: 'rgba(255,255,255,0.3)',
+                        letterSpacing: '0.08em',
+                        lineHeight: 1.8,
+                      }}
+                    >
+                      {step.detail}
+                    </p>
+                  </div>
                 </motion.div>
               ))}
             </div>
+          </motion.div>
 
-            {/* Chart area — stylized bars */}
-            <div className="px-4 sm:px-6 pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.3 }}
-                className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4 h-28 sm:h-36 md:h-48"
+          {/* Right: Registry card */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div
+              className="bento-card rounded-2xl p-8 relative overflow-hidden"
+              style={{ minHeight: '420px' }}
+            >
+              {/* Decorative */}
+              <Sparkles
+                className="absolute bottom-6 right-6 opacity-[0.04]"
+                style={{ width: '120px', height: '120px' }}
+              />
+
+              <p
+                className="text-[10px] uppercase tracking-[0.4em] mb-8"
+                style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.25)' }}
               >
-                <div className="flex items-end gap-1.5 h-full pb-4">
-                  {[60, 80, 45, 90, 70, 55, 85, 75, 95, 65].map((h, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ height: 0 }}
-                      animate={{ height: `${h}%` }}
-                      transition={{ delay: 1.5 + i * 0.05, duration: 0.5, ease: "easeOut" }}
-                      className="flex-1 rounded-t-sm"
+                Registry / Recent Users
+              </p>
+
+              {/* Users grid */}
+              <div className="grid grid-cols-2 gap-4 mb-10">
+                {recentUsers.map((user, i) => (
+                  <motion.div
+                    key={user.initials}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
+                    className="flex items-center gap-3 group cursor-default"
+                    style={{
+                      transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)',
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.transform = 'translateX(4px)')
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.transform = 'translateX(0)')
+                    }
+                  >
+                    <div
+                      className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
                       style={{
-                        background: `linear-gradient(to top, var(--color-primary), var(--color-accent))`,
-                        opacity: 0.7 + (i % 3) * 0.1,
+                        background: 'rgba(255,255,255,0.06)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        filter: 'grayscale(100%) contrast(1.25)',
                       }}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.4 }}
-                className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4 h-28 sm:h-36 md:h-48 flex items-center justify-center"
+                    >
+                      <span
+                        className="text-[10px] font-bold text-white"
+                        style={{ fontFamily: 'var(--font-mono)' }}
+                      >
+                        {user.initials}
+                      </span>
+                    </div>
+                    <p
+                      className="text-[9px] uppercase tracking-wider leading-tight transition-colors duration-300 group-hover:text-white"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        color: 'rgba(255,255,255,0.3)',
+                        letterSpacing: '0.05em',
+                      }}
+                    >
+                      {user.title}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Stats */}
+              <div
+                className="pt-6"
+                style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
               >
-                {/* Donut chart */}
-                <svg viewBox="0 0 120 120" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--color-border)" strokeWidth="12" />
-                  <motion.circle
-                    cx="60" cy="60" r="50" fill="none" stroke="var(--color-primary)" strokeWidth="12"
-                    strokeDasharray="200 314" strokeLinecap="round"
-                    initial={{ strokeDashoffset: 314 }}
-                    animate={{ strokeDashoffset: 0 }}
-                    transition={{ delay: 1.6, duration: 1.2, ease: "easeOut" }}
-                    transform="rotate(-90 60 60)"
-                  />
-                  <motion.circle
-                    cx="60" cy="60" r="50" fill="none" stroke="var(--color-accent)" strokeWidth="12"
-                    strokeDasharray="80 314" strokeLinecap="round"
-                    initial={{ strokeDashoffset: 314 }}
-                    animate={{ strokeDashoffset: -200 }}
-                    transition={{ delay: 1.8, duration: 1, ease: "easeOut" }}
-                    transform="rotate(-90 60 60)"
-                  />
-                  <text x="60" y="58" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold" fontFamily="var(--font-mono)">68%</text>
-                  <text x="60" y="73" textAnchor="middle" fill="var(--color-text-muted)" fontSize="8">Margin</text>
-                </svg>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Floating elements — clamped to safe negative offsets within clipped parent */}
-          <motion.div
-            animate={{ y: [-8, 8, -8] }}
-            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-            className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 sm:w-14 sm:h-14 rounded-xl glass flex items-center justify-center"
-          >
-            <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--color-accent)]" />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [6, -6, 6] }}
-            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut", delay: 1 }}
-            className="absolute -bottom-2 -left-2 sm:-bottom-3 sm:-left-3 w-9 h-9 sm:w-12 sm:h-12 rounded-xl glass flex items-center justify-center"
-          >
-            <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--color-primary)]" />
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [-5, 5, -5] }}
-            transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 2 }}
-            className="absolute top-1/3 -left-4 sm:-left-6 w-8 h-8 sm:w-11 sm:h-11 rounded-lg glass flex items-center justify-center"
-          >
-            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--color-warning)]" />
-          </motion.div>
-        </motion.div>
-      </Container>
-    </Section>
-  )
-}
-
-/* ─── Trusted By ───────────────────────────────────────────────────────────── */
-function TrustedBy() {
-  const roles = ['Analysts', 'Students', 'Businesses', 'Data Scientists', 'Tableau Developers']
-  return (
-    <Section className="py-16 border-y border-[var(--color-border)]" background="none">
-      <Container className="text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)] mb-8">Built for</p>
-        <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
-          {roles.map((role, i) => (
-            <motion.span
-              key={role}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="text-sm sm:text-base font-medium text-[var(--color-text-secondary)] hover:text-white transition-colors cursor-default"
-            >
-              {role}
-            </motion.span>
-          ))}
-        </div>
-      </Container>
-    </Section>
-  )
-}
-
-/* ─── Features ─────────────────────────────────────────────────────────────── */
-const features = [
-  { icon: Upload, title: 'Upload Any CSV', desc: 'Supports any structured dataset with automatic encoding detection and error handling.' },
-  { icon: Brain, title: 'AI Data Profiling', desc: 'Automatically analyzes every column, detects types, semantics, and relationships.' },
-  { icon: BarChart3, title: 'Smart Visualization Engine', desc: 'Recommends the best charts with confidence scores you can override.' },
-  { icon: Gauge, title: 'KPI Generator', desc: 'Creates meaningful business metrics — revenue, growth, margins — automatically.' },
-  { icon: LayoutDashboard, title: 'Dashboard Generator', desc: 'Builds beautiful Tableau layouts using an intelligent planning engine.' },
-  { icon: FileDown, title: 'Tableau Export', desc: 'Exports production-ready .twb and .twbx workbooks.' },
-  { icon: Lightbulb, title: 'AI Insights', desc: 'Detects trends, anomalies, and correlations in your data.' },
-  { icon: TrendingUp, title: 'Forecasting', desc: 'Time-series prediction with confidence intervals.' },
-  { icon: Palette, title: 'Modern Themes', desc: 'Dark Executive, Corporate, Minimal — all configuration-driven.' },
-]
-
-function Features() {
-  return (
-    <Section id="features" background="none">
-      <Container>
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-          className="text-center mb-16"
-        >
-          <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">Capabilities</motion.p>
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">Everything You Need</motion.h2>
-          <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)] max-w-2xl mx-auto">
-            From raw data to polished Tableau dashboards — automated, intelligent, and production-ready.
-          </motion.p>
-        </motion.div>
-
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          variants={stagger}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              variants={fadeUp}
-              custom={i}
-              className="group p-6 rounded-2xl bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-[var(--color-primary)]/5 flex flex-col h-full"
-            >
-              <div className="w-10 h-10 rounded-xl bg-[var(--color-primary)]/10 flex items-center justify-center mb-4 group-hover:bg-[var(--color-primary)]/20 transition-colors">
-                <f.icon className="w-5 h-5 text-[var(--color-primary)]" />
-              </div>
-              <h3 className="text-base font-semibold mb-2">{f.title}</h3>
-              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed flex-grow">{f.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </Container>
-    </Section>
-  )
-}
-
-/* ─── Workflow ──────────────────────────────────────────────────────────────── */
-const steps = [
-  { step: '01', title: 'Upload CSV', desc: 'Drag & drop any structured CSV file.' },
-  { step: '02', title: 'Analyze Dataset', desc: 'AI profiles every column and infers semantics.' },
-  { step: '03', title: 'Detect Data Types', desc: 'Dimensions, measures, dates — auto-detected.' },
-  { step: '04', title: 'Generate KPIs', desc: 'Business metrics computed automatically.' },
-  { step: '05', title: 'Recommend Charts', desc: 'Ranked visualization recommendations.' },
-  { step: '06', title: 'Create Dashboard', desc: 'Blueprint planned and layout generated.' },
-  { step: '07', title: 'Export TWBX', desc: 'Download your Tableau workbook.' },
-]
-
-function Workflow() {
-  return (
-    <Section id="workflow" background="card">
-      <Container>
-        <motion.div
-          initial="hidden" whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-          className="text-center mb-16"
-        >
-          <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">How It Works</motion.p>
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">Seven Steps to a Tableau Dashboard</motion.h2>
-          <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)]">Fully automated. Minimal effort.</motion.p>
-        </motion.div>
-
-        {/* Timeline — centered, max 672px wide (42rem) */}
-        <div className="relative max-w-2xl mx-auto w-full">
-          {/* Vertical line — aligned to dot center */}
-          <div
-            className="absolute left-[11px] top-2 bottom-2 w-[1px]"
-            style={{
-              background: 'linear-gradient(to bottom, var(--color-primary), var(--color-accent), transparent)'
-            }}
-          />
-
-          <div className="space-y-8">
-            {steps.map((s, i) => (
-              <motion.div
-                key={s.step}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.5 }}
-                className="relative flex items-start gap-6 pl-10"
-              >
-                {/* Dot — sits exactly on the vertical line */}
-                <div
-                  className="absolute left-0 top-1.5 w-[22px] h-[22px] rounded-full border-4 border-[var(--color-bg-deep)] z-10 shrink-0"
-                  style={{
-                    background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))'
-                  }}
-                />
-                <div>
-                  <span className="text-xs font-mono text-[var(--color-accent)] font-semibold">{s.step}</span>
-                  <h3 className="text-base font-semibold mt-0.5">{s.title}</h3>
-                  <p className="text-sm text-[var(--color-text-secondary)] mt-1">{s.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </Container>
-    </Section>
-  )
-}
-
-/* ─── Dashboard Preview ───────────────────────────────────────────────────── */
-function DashboardPreview() {
-  return (
-    <Section id="preview" background="none">
-      <Container>
-        <motion.div
-          initial="hidden" whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-          className="text-center mb-14"
-        >
-          <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">Preview</motion.p>
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">See It Before You Export</motion.h2>
-          <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)] max-w-2xl mx-auto">
-            Preview your generated Tableau dashboard in real-time before downloading the workbook.
-          </motion.p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="rounded-2xl glass glow-primary overflow-hidden"
-        >
-          {/* Title bar */}
-          <div className="h-11 bg-[var(--color-bg-surface)] flex items-center px-4 gap-2 border-b border-[var(--color-border)]">
-            <div className="w-3 h-3 rounded-full bg-[var(--color-danger)] opacity-60" />
-            <div className="w-3 h-3 rounded-full bg-[var(--color-warning)] opacity-60" />
-            <div className="w-3 h-3 rounded-full bg-[var(--color-success)] opacity-60" />
-            <span className="ml-4 text-xs text-[var(--color-text-muted)]">Sales Dashboard — TableauGen AI</span>
-          </div>
-
-          <div className="p-5 sm:p-6">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-5">
-              <div>
-                <h3 className="text-lg font-bold">Sales Performance Dashboard</h3>
-                <p className="text-xs text-[var(--color-text-muted)]">Generated from sales_data_2024.csv</p>
-              </div>
-              <div className="flex gap-2">
-                <span className="px-3 py-1 rounded-md text-xs glass text-[var(--color-text-secondary)]">Filter: All Regions</span>
-                <span className="px-3 py-1 rounded-md text-xs glass text-[var(--color-text-secondary)]">2024</span>
-              </div>
-            </div>
-
-            {/* KPIs */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-              {[
-                { label: 'Total Revenue', value: '$2,456,890', change: '+18.2%', up: true },
-                { label: 'Net Profit', value: '$892,340', change: '+12.7%', up: true },
-                { label: 'Total Orders', value: '12,847', change: '+8.4%', up: true },
-                { label: 'Avg Order Value', value: '$191.24', change: '-2.1%', up: false },
-              ].map((kpi) => (
-                <div key={kpi.label} className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-3.5">
-                  <p className="text-[10px] text-[var(--color-text-muted)] uppercase tracking-wider">{kpi.label}</p>
-                  <p className="text-base sm:text-lg font-bold font-[var(--font-mono)] mt-1">{kpi.value}</p>
-                  <span className={`text-[11px] font-medium ${kpi.up ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}>
-                    {kpi.change}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Charts */}
-            <div className="grid sm:grid-cols-3 gap-3">
-              {/* Bar chart */}
-              <div className="sm:col-span-2 rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4">
-                <p className="text-xs font-medium text-[var(--color-text-secondary)] mb-3">Revenue by Region</p>
-                <div className="flex items-end gap-2 h-28">
-                  {[75, 92, 60, 85, 45, 70, 80].map((h, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ height: 0 }}
-                      whileInView={{ height: `${h}%` }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.1 + i * 0.06, duration: 0.6, ease: "easeOut" }}
-                      className="flex-1 rounded-t"
-                      style={{ background: `linear-gradient(to top, var(--color-primary), var(--color-accent))` }}
-                    />
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  {[
+                    { val: '< 60s', label: 'Avg Gen Time' },
+                    { val: '100MB', label: 'Max File Size' },
+                    { val: '100%', label: 'Auto-Exported' },
+                  ].map((stat) => (
+                    <div key={stat.label}>
+                      <p
+                        className="text-white text-lg font-bold mb-1"
+                        style={{ fontFamily: 'var(--font-mono)' }}
+                      >
+                        {stat.val}
+                      </p>
+                      <p
+                        className="text-[8px] uppercase tracking-widest"
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          color: 'rgba(255,255,255,0.25)',
+                        }}
+                      >
+                        {stat.label}
+                      </p>
+                    </div>
                   ))}
                 </div>
               </div>
-
-              {/* Pie */}
-              <div className="rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4 flex flex-col items-center justify-center">
-                <p className="text-xs font-medium text-[var(--color-text-secondary)] mb-3 self-start">Category Split</p>
-                <svg viewBox="0 0 100 100" className="w-20 h-20">
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-primary)" strokeWidth="16" strokeDasharray="120 251" transform="rotate(-90 50 50)" />
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-accent)" strokeWidth="16" strokeDasharray="75 251" strokeDashoffset="-120" transform="rotate(-90 50 50)" />
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-success)" strokeWidth="16" strokeDasharray="56 251" strokeDashoffset="-195" transform="rotate(-90 50 50)" />
-                </svg>
-                <div className="flex gap-3 mt-3 text-[10px] text-[var(--color-text-muted)]">
-                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--color-primary)]" />Tech</span>
-                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--color-accent)]" />Furniture</span>
-                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[var(--color-success)]" />Office</span>
-                </div>
-              </div>
             </div>
-
-            {/* Trend line area */}
-            <div className="mt-3 rounded-lg bg-white/[0.03] border border-[var(--color-border)] p-4">
-              <p className="text-xs font-medium text-[var(--color-text-secondary)] mb-3">Monthly Trend</p>
-              <svg viewBox="0 0 600 80" className="w-full h-16">
-                <defs>
-                  <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path d="M0,60 Q50,55 100,50 T200,35 T300,25 T400,30 T500,15 T600,10" fill="none" stroke="var(--color-primary)" strokeWidth="2" />
-                <path d="M0,60 Q50,55 100,50 T200,35 T300,25 T400,30 T500,15 T600,10 V80 H0 Z" fill="url(#trendGrad)" />
-              </svg>
-            </div>
-          </div>
-        </motion.div>
-      </Container>
-    </Section>
+          </motion.div>
+        </div>
+      </div>
+    </section>
   )
 }
 
-/* ─── Testimonials ─────────────────────────────────────────────────────────── */
+/* ─── SCENE 4: Testimonials ──────────────────────────────────────────── */
 const testimonials = [
-  { name: 'Sarah Chen', role: 'Data Analyst, Deloitte', text: 'TableauGen AI turned a 3-hour dashboard build into a 5-minute task. The generated workbooks are production-ready.' },
-  { name: 'Marcus Rivera', role: 'BI Developer', text: 'Finally, a tool that understands Tableau\'s structure. The KPI generation and calculated fields alone save me hours.' },
-  { name: 'Emily Tanaka', role: 'Product Manager', text: 'I upload our weekly export and get a polished executive dashboard in minutes. Game changer for our team.' },
+  {
+    quote:
+      'TableauGen AI turned a 3-hour dashboard build into a 5-minute task. The generated workbooks are production-ready.',
+    name: 'Sarah Chen',
+    title: 'Data Analyst · Deloitte',
+    initials: 'SC',
+  },
+  {
+    quote:
+      'Finally a tool that understands Tableau\'s structure. The KPI generation and calculated fields alone save me hours every week.',
+    name: 'Marcus Rivera',
+    title: 'BI Developer · Independent',
+    initials: 'MR',
+  },
 ]
 
-function Testimonials() {
+function Scene4Testimonials() {
   return (
-    <Section background="card">
-      <Container>
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-14">
-          <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">Testimonials</motion.p>
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold">Loved by Data Professionals</motion.h2>
+    <section
+      id="testimonials"
+      style={{
+        background: 'rgba(255,255,255,0.01)',
+        padding: '8rem 0',
+        borderTop: '1px solid rgba(255,255,255,0.05)',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+      }}
+    >
+      <div style={{ width: '92vw', margin: '0 auto' }}>
+        {/* Section headline */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          variants={stagger}
+          className="text-center mb-20"
+        >
+          <motion.p
+            variants={slideUp}
+            className="text-[10px] uppercase tracking-[0.5em] mb-6"
+            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
+          >
+            Testimonials
+          </motion.p>
+          <motion.h2
+            variants={slideUp}
+            className="silver-gradient-text"
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(40px, 8vw, 110px)',
+              lineHeight: 0.88,
+              fontWeight: 400,
+            }}
+          >
+            Loved by data
+            <br />
+            <em>professionals.</em>
+          </motion.h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-3 gap-6">
+        {/* Testimonial cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="p-6 rounded-2xl bg-[var(--color-bg-card)] border border-[var(--color-border)] hover:border-[var(--color-border-hover)] transition-colors flex flex-col justify-between h-full"
+              transition={{ delay: i * 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="group"
+              style={{
+                borderLeft: '1px solid rgba(255,255,255,0.1)',
+                paddingLeft: '3rem',
+              }}
             >
-              <div>
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: 5 }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 fill-[var(--color-warning)] text-[var(--color-warning)]" />
-                  ))}
+              <p
+                className="silver-gradient-text mb-8"
+                style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontStyle: 'italic',
+                  fontSize: 'clamp(22px, 3vw, 38px)',
+                  lineHeight: 1.15,
+                  fontWeight: 400,
+                }}
+              >
+                "{t.quote}"
+              </p>
+              <div className="flex items-center gap-4">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    filter: 'grayscale(100%) contrast(1.25)',
+                  }}
+                >
+                  <span
+                    className="text-[11px] font-bold text-white"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    {t.initials}
+                  </span>
                 </div>
-                <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-5">"{t.text}"</p>
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{t.name}</p>
-                <p className="text-xs text-[var(--color-text-muted)]">{t.role}</p>
+                <div>
+                  <p
+                    className="text-white text-sm font-semibold"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    {t.name}
+                  </p>
+                  <p
+                    className="text-[10px] uppercase tracking-[0.2em]"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      color: 'rgba(255,255,255,0.3)',
+                    }}
+                  >
+                    {t.title}
+                  </p>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
-      </Container>
-    </Section>
+      </div>
+    </section>
   )
 }
 
-/* ─── FAQ ───────────────────────────────────────────────────────────────────── */
-const faqs = [
-  { q: 'What file formats are supported?', a: 'Currently we support CSV files. The system automatically detects encoding, handles missing headers, and validates data integrity.' },
-  { q: 'Do I need Tableau Desktop?', a: 'No. TableauGen AI generates the workbook for you. You can open the exported .twb or .twbx file in Tableau Desktop, Tableau Reader (free), or publish to Tableau Server.' },
-  { q: 'How large can my CSV be?', a: 'We support files up to 100MB. Large files are processed in the background so the UI stays responsive.' },
-  { q: 'Can I customize the generated dashboard?', a: 'Yes. You can override chart recommendations, choose themes, select templates, and edit KPIs before exporting.' },
-  { q: 'Is my data secure?', a: 'Absolutely. All data is processed server-side, encrypted in transit, and deleted after export unless you choose to save it to a project.' },
-]
+/* ─── SCENE 5: Final CTA + Beta Form + Footer ────────────────────────── */
+function CountdownTimer() {
+  const [time, setTime] = useState({ h: 47, m: 59, s: 59 })
 
-function FAQ() {
-  const [openIdx, setOpenIdx] = useState<number | null>(null)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime((prev) => {
+        let { h, m, s } = prev
+        if (s > 0) return { h, m, s: s - 1 }
+        if (m > 0) return { h, m: m - 1, s: 59 }
+        if (h > 0) return { h: h - 1, m: 59, s: 59 }
+        return { h: 47, m: 59, s: 59 }
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const pad = (n: number) => String(n).padStart(2, '0')
+
   return (
-    <Section id="faq" background="none">
-      <Container>
-        <div className="max-w-3xl mx-auto w-full">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-14">
-            <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">FAQ</motion.p>
-            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold">Frequently Asked Questions</motion.h2>
+    <div className="flex items-center justify-center gap-2 mb-8">
+      <p
+        className="text-[9px] uppercase tracking-[0.5em] mr-4"
+        style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)' }}
+      >
+        Beta Closes In
+      </p>
+      {[
+        { val: pad(time.h), label: 'HH' },
+        { sep: true },
+        { val: pad(time.m), label: 'MM' },
+        { sep: true },
+        { val: pad(time.s), label: 'SS' },
+      ].map((item, i) =>
+        'sep' in item ? (
+          <span
+            key={i}
+            className="text-3xl"
+            style={{
+              fontFamily: 'var(--font-serif)',
+              color: 'rgba(255,255,255,0.1)',
+              fontStyle: 'italic',
+            }}
+          >
+            /
+          </span>
+        ) : (
+          <div key={i} className="text-center">
+            <p
+              className="silver-gradient-text"
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontStyle: 'italic',
+                fontSize: 'clamp(36px, 6vw, 80px)',
+                lineHeight: 1,
+                fontWeight: 400,
+              }}
+            >
+              {item.val}
+            </p>
+            <p
+              className="text-[8px] uppercase tracking-[0.4em] mt-1"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'rgba(255,255,255,0.2)',
+              }}
+            >
+              {item.label}
+            </p>
+          </div>
+        )
+      )}
+    </div>
+  )
+}
+
+function Scene5CTA() {
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (email) setSubmitted(true)
+  }
+
+  return (
+    <section
+      id="cta"
+      style={{ background: '#080808', padding: '8rem 0 4rem' }}
+    >
+      <div style={{ width: '92vw', margin: '0 auto' }}>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          variants={stagger}
+          className="text-center"
+        >
+          {/* Countdown */}
+          <motion.div variants={slideUp} custom={0}>
+            <CountdownTimer />
           </motion.div>
 
-          <div className="space-y-3">
-            {faqs.map((faq, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-                className="rounded-xl border border-[var(--color-border)] overflow-hidden"
+          {/* Headline */}
+          <motion.h2
+            variants={slideUp}
+            custom={1}
+            className="silver-gradient-text mb-6"
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(36px, 7vw, 100px)',
+              lineHeight: 0.9,
+              fontWeight: 400,
+            }}
+          >
+            Start building
+            <br />
+            <em>smarter dashboards.</em>
+          </motion.h2>
+
+          <motion.p
+            variants={slideUp}
+            custom={2}
+            className="mb-12 mx-auto"
+            style={{
+              fontFamily: 'var(--font-sans)',
+              color: 'rgba(255,255,255,0.4)',
+              fontSize: '16px',
+              maxWidth: '480px',
+              lineHeight: 1.7,
+            }}
+          >
+            Join the beta. Upload your first CSV and get a complete Tableau
+            workbook in under a minute.
+          </motion.p>
+
+          {/* Capture Form */}
+          <motion.div
+            variants={slideUp}
+            custom={3}
+            className="mx-auto mb-16"
+            style={{ maxWidth: '600px' }}
+          >
+            {submitted ? (
+              <div
+                className="glass rounded-2xl p-8 text-center"
+                style={{ border: '1px solid rgba(255,255,255,0.1)' }}
               >
-                <button
-                  onClick={() => setOpenIdx(openIdx === i ? null : i)}
-                  className="w-full flex items-center justify-between p-5 text-left text-sm font-medium hover:bg-white/[0.02] transition-colors"
+                <p
+                  className="silver-gradient-text text-2xl mb-2"
+                  style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}
                 >
-                  {faq.q}
-                  <ChevronDown className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${openIdx === i ? 'rotate-180' : ''}`} />
-                </button>
-                {openIdx === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    className="px-5 pb-5 text-sm text-[var(--color-text-secondary)] leading-relaxed"
-                  >
-                    {faq.a}
-                  </motion.div>
-                )}
-              </motion.div>
+                  You're on the list.
+                </p>
+                <p
+                  className="text-[11px] uppercase tracking-widest"
+                  style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
+                >
+                  We'll be in touch soon.
+                </p>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleSubmit}
+                className="glass rounded-2xl flex flex-col sm:flex-row overflow-hidden"
+                style={{ border: '1px solid rgba(255,255,255,0.1)' }}
+              >
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  className="flex-1 px-6 py-5 bg-transparent text-white placeholder:text-white/20 outline-none text-sm"
+                  style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', letterSpacing: '0.05em' }}
+                />
+                <Link
+                  to="/signup"
+                  className="silver-btn px-8 py-5 text-xs font-bold tracking-widest uppercase text-center whitespace-nowrap"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  Request Access →
+                </Link>
+              </form>
+            )}
+          </motion.div>
+
+          {/* Trust marks */}
+          <motion.div
+            variants={slideUp}
+            custom={4}
+            className="flex items-center justify-center gap-8 flex-wrap"
+          >
+            {[
+              'No credit card required',
+              'Cancel anytime',
+              'Export .twb + .twbx',
+            ].map((label) => (
+              <span
+                key={label}
+                className="text-[10px] uppercase tracking-[0.3em]"
+                style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)' }}
+              >
+                {label}
+              </span>
             ))}
-          </div>
-        </div>
-      </Container>
-    </Section>
-  )
-}
-
-/* ─── Pricing ──────────────────────────────────────────────────────────────── */
-const plans = [
-  {
-    name: 'Free',
-    price: '$0',
-    desc: 'For individuals exploring the platform.',
-    features: ['3 projects', '10MB file limit', 'Basic themes', 'CSV export', 'Community support'],
-    cta: 'Get Started',
-    highlight: false,
-  },
-  {
-    name: 'Pro',
-    price: '$29',
-    period: '/mo',
-    desc: 'For analysts and growing teams.',
-    features: ['Unlimited projects', '100MB file limit', 'All themes & templates', '.twb + .twbx export', 'AI Insights & Forecasting', 'Priority support'],
-    cta: 'Start Free Trial',
-    highlight: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    desc: 'For organizations at scale.',
-    features: ['Everything in Pro', 'SSO & SAML', 'Custom templates', 'API access', 'Dedicated support', 'SLA & compliance'],
-    cta: 'Contact Sales',
-    highlight: false,
-  },
-]
-
-function Pricing() {
-  return (
-    <Section id="pricing" background="card">
-      <Container>
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="text-center mb-14">
-          <motion.p variants={fadeUp} className="text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-3">Pricing</motion.p>
-          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">Simple, Transparent Pricing</motion.h2>
-          <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)]">Start free. Upgrade when you need more power.</motion.p>
+          </motion.div>
         </motion.div>
 
-        <div className="grid sm:grid-cols-3 gap-6">
-          {plans.map((plan, i) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className={`p-6 rounded-2xl border transition-all flex flex-col justify-between h-full ${
-                plan.highlight
-                  ? 'bg-[var(--color-bg-card)] border-[var(--color-primary)] glow-primary hover:scale-[1.02]'
-                  : 'bg-[var(--color-bg-card)] border-[var(--color-border)] hover:border-[var(--color-border-hover)]'
-              }`}
-            >
-              <div>
-                {plan.highlight && (
-                  <span className="inline-block text-[10px] uppercase tracking-wider font-semibold text-[var(--color-primary)] mb-3">Most Popular</span>
-                )}
-                <h3 className="text-lg font-bold">{plan.name}</h3>
-                <div className="mt-3 mb-1">
-                  <span className="text-3xl font-bold font-[var(--font-mono)]">{plan.price}</span>
-                  {plan.period && <span className="text-sm text-[var(--color-text-muted)]">{plan.period}</span>}
-                </div>
-                <p className="text-xs text-[var(--color-text-secondary)] mb-6">{plan.desc}</p>
-
-                <ul className="space-y-2.5 mb-8">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
-                      <Check className="w-4 h-4 text-[var(--color-success)] shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <Link
-                to="/signup"
-                className={`block w-full text-center py-2.5 rounded-lg text-sm font-semibold transition-all ${
-                  plan.highlight
-                    ? 'gradient-primary text-white hover:opacity-90'
-                    : 'glass text-white hover:bg-white/5'
-                }`}
-              >
-                {plan.cta}
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </Container>
-    </Section>
-  )
-}
-
-/* ─── CTA ──────────────────────────────────────────────────────────────────── */
-function CTA() {
-  return (
-    <Section background="none">
-      <Container>
-        <div className="max-w-4xl mx-auto w-full text-center">
-          <motion.div
-            initial="hidden" whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
+        {/* Footer */}
+        <div
+          className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-24 pt-8"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+        >
+          <span
+            className="text-xs font-bold tracking-[0.3em] uppercase text-white"
+            style={{ fontFamily: 'var(--font-mono)' }}
           >
-            <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-bold mb-4">
-              Start Building Smarter Tableau Dashboards Today
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-[var(--color-text-secondary)] max-w-xl mx-auto mb-8">
-              Join thousands of analysts who automate their Tableau workflows with TableauGen AI.
-            </motion.p>
-            <motion.div variants={fadeUp}>
-              <Link to="/signup"
-                className="inline-flex items-center gap-2 px-8 py-4 text-base font-semibold text-white rounded-xl gradient-primary glow-primary hover:scale-[1.02] active:scale-[0.98] transition-transform"
-              >
-                Get Started for Free <ArrowRight className="w-5 h-5" />
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </Container>
-    </Section>
-  )
-}
-
-/* ─── Footer ───────────────────────────────────────────────────────────────── */
-function Footer() {
-  return (
-    <footer className="border-t border-[var(--color-border)] py-10 w-full">
-      <Container className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
-            <Sparkles className="w-3.5 h-3.5 text-white" />
-          </div>
-          <span className="font-[var(--font-heading)] text-sm font-bold text-white">
-            TableauGen <span className="text-[var(--color-accent)]">AI</span>
+            TABLEAU<span style={{ color: 'rgba(255,255,255,0.3)' }}>GEN</span>_AI
           </span>
+
+          <div className="flex items-center gap-6">
+            {['Privacy', 'Terms', 'Contact'].map((label) => (
+              <a
+                key={label}
+                href="#"
+                className="text-[10px] uppercase tracking-[0.2em] transition-colors duration-200 hover:text-white"
+                style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.25)' }}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+
+          <p
+            className="text-[10px] uppercase tracking-[0.2em]"
+            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)' }}
+          >
+            © {new Date().getFullYear()} TableauGen AI
+          </p>
         </div>
-        <p className="text-xs text-[var(--color-text-muted)]">
-          &copy; {new Date().getFullYear()} TableauGen AI. All rights reserved.
-        </p>
-      </Container>
-    </footer>
+      </div>
+    </section>
   )
 }
 
-/* ─── Landing Page ─────────────────────────────────────────────────────────── */
+/* ─── Floating Mobile Nav ─────────────────────────────────────────────── */
+function FloatingMobileNav() {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const handler = () => setVisible(window.scrollY > window.innerHeight * 0.8)
+    window.addEventListener('scroll', handler)
+    return () => window.removeEventListener('scroll', handler)
+  }, [])
+
+  return (
+    <motion.div
+      initial={{ y: 80, opacity: 0 }}
+      animate={{ y: visible ? 0 : 80, opacity: visible ? 1 : 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+    >
+      <div
+        className="mobile-nav-blur flex items-center gap-1 px-4 py-3 rounded-full"
+        style={{ gap: '0.25rem' }}
+      >
+        {[
+          { label: 'Home', href: '#hero' },
+          { label: 'Features', href: '#features' },
+        ].map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
+            className="px-3 py-2 text-[8px] uppercase tracking-widest transition-colors hover:text-white"
+            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.4)' }}
+          >
+            {item.label}
+          </a>
+        ))}
+        <Link
+          to="/signup"
+          className="px-4 py-2 rounded-full text-[8px] font-bold uppercase tracking-widest silver-btn mx-1"
+          style={{ fontFamily: 'var(--font-mono)' }}
+        >
+          Join
+        </Link>
+        {[
+          { label: 'About', href: '#testimonials' },
+          { label: 'Beta', href: '#cta' },
+        ].map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
+            className="px-3 py-2 text-[8px] uppercase tracking-widest transition-colors hover:text-white"
+            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.4)' }}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </motion.div>
+  )
+}
+
+/* ─── Main Landing Page ──────────────────────────────────────────────── */
 export default function LandingPage() {
   return (
-    <Layout>
-      <Navbar />
-      <Hero />
-      <TrustedBy />
-      <Features />
-      <Workflow />
-      <DashboardPreview />
-      <Testimonials />
-      <FAQ />
-      <Pricing />
-      <CTA />
-      <Footer />
-    </Layout>
+    <div style={{ background: '#080808', minHeight: '100vh' }}>
+      <FloatingMobileNav />
+      {/* Scene 1: Hero */}
+      <Scene1Hero />
+      {/* Scene 2: Feature Bento Grid */}
+      <Scene2Features />
+      {/* Scene 3: Value Prop / How It Works + Member Registry */}
+      <Scene3ValueProp />
+      {/* Scene 4: Testimonials */}
+      <Scene4Testimonials />
+      {/* Scene 5: Final CTA + Beta Form + Footer */}
+      <Scene5CTA />
+    </div>
   )
 }
