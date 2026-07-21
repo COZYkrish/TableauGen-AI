@@ -41,19 +41,237 @@ function Scene1Hero() {
     return () => { document.body.style.overflow = '' }
   }, [menuOpen])
 
+
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col noise-bg"
-      style={{ background: '#080808' }}
+      className="relative h-screen w-full overflow-hidden bg-black"
     >
-      {/* Subtle radial glow */}
+      {/* ── Video Background ────────────────────────────────────── */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ objectPosition: '70% center' }}
+      >
+        <source
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_204221_5339e40b-e73d-4ab0-9c65-79c18c66fd50.mp4"
+          type="video/mp4"
+        />
+      </video>
+
+      {/* Gradient overlays for readability */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 70% 50% at 50% 30%, rgba(255,255,255,0.03) 0%, transparent 70%)',
+          background:
+            'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.15) 100%)',
+          zIndex: 1,
         }}
       />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)',
+          zIndex: 1,
+        }}
+      />
+
+      {/* ── Navbar (z-30) ───────────────────────────────────────── */}
+      <nav
+        className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-5 md:px-12 lg:px-16 transition-all duration-500"
+        style={{
+          zIndex: 30,
+          background: scrolled ? 'rgba(0,0,0,0.55)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(16px)' : 'none',
+        }}
+      >
+        {/* Brand + desktop nav */}
+        <div className="flex items-center gap-8">
+          <Link
+            to="/"
+            className="text-lg font-semibold tracking-tight text-white sm:text-xl"
+            style={{ fontFamily: 'var(--font-sans)' }}
+          >
+            TABLEAU<span style={{ color: 'rgba(255,255,255,0.45)' }}>GEN</span>
+            <span className="text-white/70"> AI</span>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-7">
+            {[
+              { label: 'Features', href: '#features' },
+              { label: 'How It Works', href: '#how-it-works' },
+              { label: 'Testimonials', href: '#testimonials' },
+            ].map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                className="text-sm text-white/70 hover:text-white transition-colors"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop CTA */}
+        <Link
+          to="/signup"
+          className="hidden md:inline-flex rounded-lg bg-white px-5 py-2 text-sm font-medium text-black hover:scale-105 transition-transform"
+          style={{ fontFamily: 'var(--font-sans)' }}
+        >
+          Get Started
+        </Link>
+
+        {/* Mobile hamburger (z-50) */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden relative w-10 h-10 flex items-center justify-center active:scale-90 transition-transform"
+          style={{ zIndex: 50 }}
+          aria-label="Toggle navigation menu"
+        >
+          <Menu
+            size={22}
+            className="absolute text-white transition-all duration-300"
+            style={{
+              opacity: menuOpen ? 0 : 1,
+              transform: menuOpen ? 'rotate(90deg) scale(0.8)' : 'rotate(0deg) scale(1)',
+            }}
+          />
+          <X
+            size={22}
+            className="absolute text-white transition-all duration-300"
+            style={{
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.8)',
+            }}
+          />
+        </button>
+      </nav>
+
+      {/* ── Mobile Fullscreen Menu (z-20) ───────────────────────── */}
+      <div
+        className="absolute inset-x-0 top-0 overflow-hidden bg-black/98 backdrop-blur-xl md:hidden"
+        style={{
+          zIndex: 20,
+          height: menuOpen ? '100dvh' : 0,
+          opacity: menuOpen ? 1 : 0,
+          pointerEvents: menuOpen ? 'auto' : 'none',
+          transition:
+            'height 500ms cubic-bezier(0.16,1,0.3,1), opacity 500ms cubic-bezier(0.16,1,0.3,1)',
+        }}
+      >
+        <div
+          className="flex h-full flex-col justify-center px-8"
+          style={{
+            opacity: menuOpen ? 1 : 0,
+            transform: menuOpen ? 'translateY(0)' : 'translateY(32px)',
+            transition: 'opacity 400ms ease 100ms, transform 400ms ease 100ms',
+          }}
+        >
+          <div className="space-y-7 mb-10">
+            {[
+              { label: 'Features', href: '#features' },
+              { label: 'How It Works', href: '#how-it-works' },
+              { label: 'Testimonials', href: '#testimonials' },
+            ].map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                onClick={() => setMenuOpen(false)}
+                className="block text-3xl font-medium text-white/90 hover:text-white transition-colors"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+          <Link
+            to="/signup"
+            onClick={() => setMenuOpen(false)}
+            className="mt-2 inline-flex w-fit rounded-full bg-white px-8 py-3.5 text-base font-medium text-black hover:scale-105 transition-transform"
+            style={{ fontFamily: 'var(--font-sans)' }}
+          >
+            Get Started
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Hero Content (z-10) ─────────────────────────────────── */}
+      <div
+        className="absolute inset-0 flex flex-col justify-between px-6 pb-10 pt-24 sm:pb-12 sm:pt-28 md:px-12 md:pb-16 md:pt-32 lg:px-16"
+        style={{ zIndex: 10 }}
+      >
+        {/* Top: Badge + Headline */}
+        <div style={{ maxWidth: '820px' }}>
+          <p
+            className="mb-4 sm:mb-6 text-xs sm:text-sm text-white/75"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+              animation: 'fadeSlideUp 0.8s ease 0.2s both',
+            }}
+          >
+            AI-Powered Dashboard Intelligence
+          </p>
+
+          <h1
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(40px, 7.5vw, 108px)',
+              lineHeight: 1.04,
+              letterSpacing: '-0.02em',
+              fontWeight: 400,
+              color: '#ffffff',
+              animation: 'fadeSlideUp 0.8s ease 0.4s both',
+            }}
+          >
+            Instant Tableau
+            <br />
+            <em>Dashboards,</em>
+            <br />
+            <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72em' }}>
+              from any CSV.
+            </span>
+          </h1>
+        </div>
+
+        {/* Bottom: Description + CTA */}
+        <div>
+          <p
+            className="mb-5 sm:mb-6 max-w-sm sm:max-w-lg leading-relaxed text-white/55 text-sm sm:text-base md:text-lg"
+            style={{
+              fontFamily: 'var(--font-sans)',
+              animation: 'fadeSlideUp 0.8s ease 0.7s both',
+            }}
+          >
+            Upload any CSV. TableauGen AI analyzes your data, selects the best
+            visualizations, builds KPIs, and exports a polished Tableau workbook
+            in under a minute.
+          </p>
+
+          <div style={{ animation: 'fadeSlideUp 0.8s ease 0.9s both' }}>
+            <Link
+              to="/signup"
+              className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 sm:px-6 sm:py-3 text-sm font-medium text-black hover:scale-105 transition-transform"
+              style={{ fontFamily: 'var(--font-sans)' }}
+            >
+              Start Generating <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
 
       {/* ── Navigation ─────────────────────────────────────────── */}
       <motion.nav
