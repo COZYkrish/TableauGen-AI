@@ -1,9 +1,9 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Upload, BarChart3, Brain, Gauge, LayoutDashboard,
-  FileDown, Sparkles, ArrowRight, Menu, X, ChevronDown
+  FileDown, Sparkles, ArrowRight, Menu, X
 } from 'lucide-react'
 
 /* ─── Animation Variants ─────────────────────────────────────────────── */
@@ -25,7 +25,7 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.1 } },
 }
 
-/* ─── SCENE 1: Navigation + Hero ─────────────────────────────────────── */
+/* ─── SCENE 1: Navigation + Hero (Video Background) ─────────────────── */
 function Scene1Hero() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -41,13 +41,10 @@ function Scene1Hero() {
     return () => { document.body.style.overflow = '' }
   }, [menuOpen])
 
-
   return (
-    <section
-      id="hero"
-      className="relative h-screen w-full overflow-hidden bg-black"
-    >
-      {/* ── Video Background ────────────────────────────────────── */}
+    <section id="hero" className="relative h-screen w-full overflow-hidden bg-black">
+
+      {/* ── Video Background ──────────────────────────────────── */}
       <video
         autoPlay
         muted
@@ -62,25 +59,23 @@ function Scene1Hero() {
         />
       </video>
 
-      {/* Gradient overlays for readability */}
+      {/* Gradient overlays for text readability */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.15) 100%)',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.15) 100%)',
           zIndex: 1,
         }}
       />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            'linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)',
+          background: 'linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)',
           zIndex: 1,
         }}
       />
 
-      {/* ── Navbar (z-30) ───────────────────────────────────────── */}
+      {/* ── Navbar (z-30) ─────────────────────────────────────── */}
       <nav
         className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-5 md:px-12 lg:px-16 transition-all duration-500"
         style={{
@@ -89,7 +84,7 @@ function Scene1Hero() {
           backdropFilter: scrolled ? 'blur(16px)' : 'none',
         }}
       >
-        {/* Brand + desktop nav */}
+        {/* Brand + desktop nav links */}
         <div className="flex items-center gap-8">
           <Link
             to="/"
@@ -153,7 +148,7 @@ function Scene1Hero() {
         </button>
       </nav>
 
-      {/* ── Mobile Fullscreen Menu (z-20) ───────────────────────── */}
+      {/* ── Mobile Fullscreen Menu (z-20) ─────────────────────── */}
       <div
         className="absolute inset-x-0 top-0 overflow-hidden bg-black/98 backdrop-blur-xl md:hidden"
         style={{
@@ -161,8 +156,7 @@ function Scene1Hero() {
           height: menuOpen ? '100dvh' : 0,
           opacity: menuOpen ? 1 : 0,
           pointerEvents: menuOpen ? 'auto' : 'none',
-          transition:
-            'height 500ms cubic-bezier(0.16,1,0.3,1), opacity 500ms cubic-bezier(0.16,1,0.3,1)',
+          transition: 'height 500ms cubic-bezier(0.16,1,0.3,1), opacity 500ms cubic-bezier(0.16,1,0.3,1)',
         }}
       >
         <div
@@ -201,7 +195,7 @@ function Scene1Hero() {
         </div>
       </div>
 
-      {/* ── Hero Content (z-10) ─────────────────────────────────── */}
+      {/* ── Hero Content (z-10) ───────────────────────────────── */}
       <div
         className="absolute inset-0 flex flex-col justify-between px-6 pb-10 pt-24 sm:pb-12 sm:pt-28 md:px-12 md:pb-16 md:pt-32 lg:px-16"
         style={{ zIndex: 10 }}
@@ -272,227 +266,6 @@ function Scene1Hero() {
 }
 
 /* ─── SCENE 2: Feature Bento Grid ────────────────────────────────────── */
-
-        <div
-          className="flex items-center justify-between px-6 md:px-12 h-16"
-          style={{ maxWidth: '92vw', margin: '0 auto', width: '92vw' }}
-        >
-          {/* Brand */}
-          <Link
-            to="/"
-            className="font-mono text-xs font-bold tracking-[0.3em] uppercase text-white"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            TABLEAU<span style={{ color: 'rgba(255,255,255,0.4)' }}>GEN</span>_AI
-          </Link>
-
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-1">
-            {['Features', 'How It Works', 'Testimonials'].map((label) => (
-              <a
-                key={label}
-                href={`#${label.toLowerCase().replace(/\s+/g, '-')}`}
-                className="px-4 py-2 rounded-lg text-xs font-mono tracking-widest uppercase transition-all duration-300"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  color: 'rgba(255,255,255,0.5)',
-                  letterSpacing: '0.2em',
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#fff'
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.5)'
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
-                }}
-              >
-                {label}
-              </a>
-            ))}
-            <Link
-              to="/signup"
-              className="ml-4 px-5 py-2 rounded-lg text-xs font-bold tracking-widest uppercase silver-btn"
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              Join Beta
-            </Link>
-          </div>
-
-          {/* Mobile Toggle */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden text-white"
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="md:hidden glass-strong border-t border-white/5 px-6 py-5 space-y-3"
-          >
-            {['Features', 'How It Works', 'Testimonials'].map((label) => (
-              <a
-                key={label}
-                href={`#${label.toLowerCase().replace(/\s+/g, '-')}`}
-                className="block text-xs font-mono uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors"
-                style={{ fontFamily: 'var(--font-mono)' }}
-                onClick={() => setMenuOpen(false)}
-              >
-                {label}
-              </a>
-            ))}
-            <Link
-              to="/signup"
-              className="block text-center px-5 py-2.5 text-xs font-bold font-mono uppercase tracking-widest silver-btn rounded-lg"
-            >
-              Join Beta
-            </Link>
-          </motion.div>
-        )}
-      </motion.nav>
-
-      {/* ── Hero Content ───────────────────────────────────────── */}
-      <div
-        className="flex-1 flex flex-col items-center justify-center relative z-10 pt-24 pb-16 px-6"
-      >
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="text-center"
-          style={{ width: '92vw', maxWidth: '900px', margin: '0 auto' }}
-        >
-          {/* Overline */}
-          <motion.p
-            variants={slideUp}
-            custom={0}
-            className="text-xs tracking-[0.5em] uppercase mb-8"
-            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
-          >
-            AI-Powered Data Intelligence
-          </motion.p>
-
-          {/* Main headline — frosted glass container */}
-          <motion.div
-            variants={slideUp}
-            custom={1}
-            className="relative mb-10"
-            style={{
-              background: 'rgba(255,255,255,0.015)',
-              border: '1px solid rgba(255,255,255,0.06)',
-              borderRadius: 'clamp(1.5rem, 4vw, 4rem)',
-              padding: 'clamp(2rem, 5vw, 5rem) clamp(1.5rem, 5vw, 4rem)',
-              backdropFilter: 'blur(24px)',
-            }}
-          >
-            <h1
-              className="silver-gradient-text"
-              style={{
-                fontFamily: 'var(--font-serif)',
-                fontStyle: 'italic',
-                fontSize: 'clamp(42px, 9vw, 130px)',
-                lineHeight: 0.88,
-                letterSpacing: '-0.03em',
-                fontWeight: 400,
-              }}
-            >
-              Instant Tableau
-              <br />
-              <em style={{ fontStyle: 'italic' }}>Dashboards</em>
-              <br />
-              <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.6em' }}>
-                from any CSV.
-              </span>
-            </h1>
-          </motion.div>
-
-          {/* Metadata Bar */}
-          <motion.div
-            variants={slideUp}
-            custom={2}
-            className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-12"
-          >
-            {[
-              { label: 'Input', value: 'CSV / Excel' },
-              { label: 'Output', value: '.twb / .twbx' },
-              { label: 'Speed', value: '< 60 sec' },
-              { label: 'Charts', value: 'Auto-Selected' },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="flex flex-col items-center gap-1"
-                style={{
-                  borderLeft: '1px solid rgba(255,255,255,0.1)',
-                  paddingLeft: '1.5rem',
-                }}
-              >
-                <span
-                  className="text-[10px] uppercase tracking-[0.4em]"
-                  style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
-                >
-                  {item.label}
-                </span>
-                <span
-                  className="text-sm font-semibold text-white"
-                  style={{ fontFamily: 'var(--font-mono)' }}
-                >
-                  {item.value}
-                </span>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* CTA Buttons */}
-          <motion.div variants={slideUp} custom={3} className="flex items-center justify-center gap-4 flex-wrap">
-            <Link
-              to="/signup"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-bold silver-btn"
-              style={{ fontFamily: 'var(--font-mono)', letterSpacing: '0.15em' }}
-            >
-              START GENERATING <ArrowRight className="w-4 h-4" />
-            </Link>
-            <a
-              href="#features"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-mono uppercase tracking-widest glass"
-              style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.6)', letterSpacing: '0.15em' }}
-            >
-              SEE HOW <ChevronDown className="w-4 h-4" />
-            </a>
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span
-            className="text-[9px] uppercase tracking-[0.5em]"
-            style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)' }}
-          >
-            Scroll
-          </span>
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-            className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent"
-          />
-        </motion.div>
-      </div>
-    </section>
-  )
-}
-
-/* ─── SCENE 2: Feature Bento Grid ────────────────────────────────────── */
 const bentoFeatures = [
   {
     index: '01',
@@ -500,7 +273,6 @@ const bentoFeatures = [
     title: 'Intelligent Data Analysis',
     desc: 'Profiles every column, detects types, semantics & relationships automatically.',
     icon: Brain,
-    span: 'md:col-span-2',
   },
   {
     index: '02',
@@ -508,7 +280,6 @@ const bentoFeatures = [
     title: 'Smart Chart Selection',
     desc: 'Recommends best charts with confidence scores you can override.',
     icon: BarChart3,
-    span: '',
   },
   {
     index: '03',
@@ -516,7 +287,6 @@ const bentoFeatures = [
     title: 'Auto KPI Generator',
     desc: 'Revenue, margins, growth — computed from your data automatically.',
     icon: Gauge,
-    span: '',
   },
   {
     index: '04',
@@ -524,7 +294,6 @@ const bentoFeatures = [
     title: 'Any CSV, Any Size',
     desc: 'Drag & drop up to 100MB. Auto encoding detection. Zero friction.',
     icon: Upload,
-    span: '',
   },
   {
     index: '05',
@@ -532,7 +301,6 @@ const bentoFeatures = [
     title: 'Dashboard Blueprint',
     desc: 'Intelligent layout planning engine builds the full dashboard structure.',
     icon: LayoutDashboard,
-    span: '',
   },
   {
     index: '06',
@@ -540,7 +308,6 @@ const bentoFeatures = [
     title: 'Production Export',
     desc: 'Download .twb and .twbx workbooks ready for Tableau Desktop or Server.',
     icon: FileDown,
-    span: '',
   },
 ]
 
@@ -551,7 +318,6 @@ function Scene2Features() {
       style={{ background: '#080808', padding: '8rem 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}
     >
       <div style={{ width: '92vw', margin: '0 auto' }}>
-        {/* Section Header */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -586,7 +352,6 @@ function Scene2Features() {
           </motion.h2>
         </motion.div>
 
-        {/* Bento Grid */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -611,10 +376,7 @@ function Scene2Features() {
               <div>
                 <p
                   className="text-[10px] uppercase tracking-[0.4em] mb-4"
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    color: 'rgba(255,255,255,0.25)',
-                  }}
+                  style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.25)' }}
                 >
                   {feature.index} / {feature.label}
                 </p>
@@ -631,7 +393,6 @@ function Scene2Features() {
                   {feature.title}
                 </h3>
                 <p
-                  className="text-sm leading-relaxed"
                   style={{
                     fontFamily: 'var(--font-mono)',
                     color: 'rgba(255,255,255,0.35)',
@@ -724,10 +485,8 @@ function Scene3ValueProp() {
                   className="flex gap-6 group"
                 >
                   <div
-                    className="flex-shrink-0 w-px self-stretch"
-                    style={{ background: 'rgba(255,255,255,0.08)', marginLeft: '20px' }}
-                  />
-                  <div style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: '2rem' }}>
+                    style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: '2rem' }}
+                  >
                     <span
                       className="text-[9px] uppercase tracking-[0.5em] block mb-1"
                       style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.25)' }}
@@ -774,7 +533,6 @@ function Scene3ValueProp() {
               className="bento-card rounded-2xl p-8 relative overflow-hidden"
               style={{ minHeight: '420px' }}
             >
-              {/* Decorative */}
               <Sparkles
                 className="absolute bottom-6 right-6 opacity-[0.04]"
                 style={{ width: '120px', height: '120px' }}
@@ -787,7 +545,6 @@ function Scene3ValueProp() {
                 Registry / Recent Users
               </p>
 
-              {/* Users grid */}
               <div className="grid grid-cols-2 gap-4 mb-10">
                 {recentUsers.map((user, i) => (
                   <motion.div
@@ -797,15 +554,9 @@ function Scene3ValueProp() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
                     className="flex items-center gap-3 group cursor-default"
-                    style={{
-                      transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)',
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.transform = 'translateX(4px)')
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.transform = 'translateX(0)')
-                    }
+                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateX(4px)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateX(0)')}
+                    style={{ transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)' }}
                   >
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
@@ -836,11 +587,7 @@ function Scene3ValueProp() {
                 ))}
               </div>
 
-              {/* Stats */}
-              <div
-                className="pt-6"
-                style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
-              >
+              <div className="pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   {[
                     { val: '< 60s', label: 'Avg Gen Time' },
@@ -856,10 +603,7 @@ function Scene3ValueProp() {
                       </p>
                       <p
                         className="text-[8px] uppercase tracking-widest"
-                        style={{
-                          fontFamily: 'var(--font-mono)',
-                          color: 'rgba(255,255,255,0.25)',
-                        }}
+                        style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.25)' }}
                       >
                         {stat.label}
                       </p>
@@ -878,15 +622,13 @@ function Scene3ValueProp() {
 /* ─── SCENE 4: Testimonials ──────────────────────────────────────────── */
 const testimonials = [
   {
-    quote:
-      'TableauGen AI turned a 3-hour dashboard build into a 5-minute task. The generated workbooks are production-ready.',
+    quote: 'TableauGen AI turned a 3-hour dashboard build into a 5-minute task. The generated workbooks are production-ready.',
     name: 'Sarah Chen',
     title: 'Data Analyst · Deloitte',
     initials: 'SC',
   },
   {
-    quote:
-      'Finally a tool that understands Tableau\'s structure. The KPI generation and calculated fields alone save me hours every week.',
+    quote: "Finally a tool that understands Tableau's structure. The KPI generation and calculated fields alone save me hours every week.",
     name: 'Marcus Rivera',
     title: 'BI Developer · Independent',
     initials: 'MR',
@@ -905,7 +647,6 @@ function Scene4Testimonials() {
       }}
     >
       <div style={{ width: '92vw', margin: '0 auto' }}>
-        {/* Section headline */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -937,7 +678,6 @@ function Scene4Testimonials() {
           </motion.h2>
         </motion.div>
 
-        {/* Testimonial cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {testimonials.map((t, i) => (
             <motion.div
@@ -946,11 +686,7 @@ function Scene4Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="group"
-              style={{
-                borderLeft: '1px solid rgba(255,255,255,0.1)',
-                paddingLeft: '3rem',
-              }}
+              style={{ borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '3rem' }}
             >
               <p
                 className="silver-gradient-text mb-8"
@@ -981,18 +717,12 @@ function Scene4Testimonials() {
                   </span>
                 </div>
                 <div>
-                  <p
-                    className="text-white text-sm font-semibold"
-                    style={{ fontFamily: 'var(--font-mono)' }}
-                  >
+                  <p className="text-white text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)' }}>
                     {t.name}
                   </p>
                   <p
                     className="text-[10px] uppercase tracking-[0.2em]"
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      color: 'rgba(255,255,255,0.3)',
-                    }}
+                    style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)' }}
                   >
                     {t.title}
                   </p>
@@ -1013,7 +743,7 @@ function CountdownTimer() {
   useEffect(() => {
     const interval = setInterval(() => {
       setTime((prev) => {
-        let { h, m, s } = prev
+        const { h, m, s } = prev
         if (s > 0) return { h, m, s: s - 1 }
         if (m > 0) return { h, m: m - 1, s: 59 }
         if (h > 0) return { h: h - 1, m: 59, s: 59 }
@@ -1044,11 +774,7 @@ function CountdownTimer() {
           <span
             key={i}
             className="text-3xl"
-            style={{
-              fontFamily: 'var(--font-serif)',
-              color: 'rgba(255,255,255,0.1)',
-              fontStyle: 'italic',
-            }}
+            style={{ fontFamily: 'var(--font-serif)', color: 'rgba(255,255,255,0.1)', fontStyle: 'italic' }}
           >
             /
           </span>
@@ -1068,10 +794,7 @@ function CountdownTimer() {
             </p>
             <p
               className="text-[8px] uppercase tracking-[0.4em] mt-1"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                color: 'rgba(255,255,255,0.2)',
-              }}
+              style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.2)' }}
             >
               {item.label}
             </p>
@@ -1092,10 +815,7 @@ function Scene5CTA() {
   }
 
   return (
-    <section
-      id="cta"
-      style={{ background: '#080808', padding: '8rem 0 4rem' }}
-    >
+    <section id="cta" style={{ background: '#080808', padding: '8rem 0 4rem' }}>
       <div style={{ width: '92vw', margin: '0 auto' }}>
         <motion.div
           initial="hidden"
@@ -1104,12 +824,10 @@ function Scene5CTA() {
           variants={stagger}
           className="text-center"
         >
-          {/* Countdown */}
           <motion.div variants={slideUp} custom={0}>
             <CountdownTimer />
           </motion.div>
 
-          {/* Headline */}
           <motion.h2
             variants={slideUp}
             custom={1}
@@ -1143,7 +861,6 @@ function Scene5CTA() {
             workbook in under a minute.
           </motion.p>
 
-          {/* Capture Form */}
           <motion.div
             variants={slideUp}
             custom={3}
@@ -1194,17 +911,12 @@ function Scene5CTA() {
             )}
           </motion.div>
 
-          {/* Trust marks */}
           <motion.div
             variants={slideUp}
             custom={4}
             className="flex items-center justify-center gap-8 flex-wrap"
           >
-            {[
-              'No credit card required',
-              'Cancel anytime',
-              'Export .twb + .twbx',
-            ].map((label) => (
+            {['No credit card required', 'Cancel anytime', 'Export .twb + .twbx'].map((label) => (
               <span
                 key={label}
                 className="text-[10px] uppercase tracking-[0.3em]"
@@ -1270,10 +982,7 @@ function FloatingMobileNav() {
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
     >
-      <div
-        className="mobile-nav-blur flex items-center gap-1 px-4 py-3 rounded-full"
-        style={{ gap: '0.25rem' }}
-      >
+      <div className="mobile-nav-blur flex items-center gap-1 px-4 py-3 rounded-full">
         {[
           { label: 'Home', href: '#hero' },
           { label: 'Features', href: '#features' },
@@ -1317,15 +1026,10 @@ export default function LandingPage() {
   return (
     <div style={{ background: '#080808', minHeight: '100vh' }}>
       <FloatingMobileNav />
-      {/* Scene 1: Hero */}
       <Scene1Hero />
-      {/* Scene 2: Feature Bento Grid */}
       <Scene2Features />
-      {/* Scene 3: Value Prop / How It Works + Member Registry */}
       <Scene3ValueProp />
-      {/* Scene 4: Testimonials */}
       <Scene4Testimonials />
-      {/* Scene 5: Final CTA + Beta Form + Footer */}
       <Scene5CTA />
     </div>
   )
