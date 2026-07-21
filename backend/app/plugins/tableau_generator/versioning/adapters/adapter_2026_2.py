@@ -7,11 +7,43 @@ class Adapter2026_2(VersionAdapter):
     Implements safe operations for replacing dimensions and measures in placeholders.
     """
     def update_dimension(self, modifier: XMLModifier, placeholder_id: str, dimension_field: str) -> bool:
-        # Example XPath: Find the placeholder worksheet, find the column shelf, replace the reference.
-        # This is highly specific to Tableau's schema.
-        xpath = f"//worksheet[@name='{placeholder_id}']//cols/dimension"
-        return modifier.safe_update_attr(xpath, "name", dimension_field)
+        field_name = dimension_field.strip("[]")
+        
+        # We need to replace all occurrences of dummy_dimension in text and attributes 
+        # (e.g. <column-instance> and <cols> text)
+        nodes = modifier.find_nodes(f"//worksheet[@name='{placeholder_id}']//*")
+        if not nodes:
+            return False
+            
+        for node in nodes:
+            if node.text and "dummy_dimension" in node.text:
+                node.text = node.text.replace("dummy_dimension", field_name)
+            for attr, val in node.attrib.items():
+                if "dummy_dimension" in val:
+                    node.set(attr, val.replace("dummy_dimension", field_name))
+                    
+        return True
 
     def update_measure(self, modifier: XMLModifier, placeholder_id: str, measure_field: str) -> bool:
-        xpath = f"//worksheet[@name='{placeholder_id}']//rows/measure"
-        return modifier.safe_update_attr(xpath, "name", measure_field)
+        # measure_field is passed as [usr:Field:qk] from WorksheetBinder
+        field_raw = measure_field.strip("[]")
+        field_name = field_raw.split(":")[1] if ":" in field_raw else field_raw
+        
+        nodes = modifier.find_nodes(f"//worksheet[@name='{placeholder_id}']//*")
+        if not nodes:
+            return False
+            
+        for node in nodes:
+            if node.text:
+                if "sum:dummy_measure:qk" in node.text:
+                    node.text = node.text.replace("sum:dummy_measure:qk", field_raw)
+                if "dummy_measure" in node.text:
+                    node.text = node.text.replace("dummy_measure", field_name)
+                    
+            for attr, val in node.attrib.items():
+                if "sum:dummy_measure:qk" in val:
+                    node.set(attr, val.replace("sum:dummy_measure:qk", field_raw))
+                if "dummy_measure" in val:
+                    node.set(attr, val.replace("dummy_measure", field_name))
+                    
+        return True

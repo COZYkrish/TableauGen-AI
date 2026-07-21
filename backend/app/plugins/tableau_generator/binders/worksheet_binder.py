@@ -24,7 +24,9 @@ class WorksheetBinder:
                     
             # Use adapter to update measure (y-axis)
             if chart.y:
-                if not self.adapter.update_measure(modifier, chart.placeholder, f"[sum:{chart.y}:qk]"):
+                # Assuming chart.y is a calculated KPI field, Tableau uses 'usr' not 'sum' for aggregate calcs
+                # If it's a regular field, it would be 'sum'. For TableauGen KPIs, it's 'usr'
+                if not self.adapter.update_measure(modifier, chart.placeholder, f"[usr:{chart.y}:qk]"):
                     logger.warning(f"Failed to bind measure {chart.y} to {chart.placeholder}")
                     success = False
                     

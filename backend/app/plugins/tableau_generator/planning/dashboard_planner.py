@@ -17,15 +17,15 @@ class DashboardPlanner:
         self, 
         project_id: str,
         recommendations: Dict[str, Any], 
-        template_capabilities: Dict[str, Any],
+        template_capabilities: Any,
         selected_theme: str
     ) -> DashboardBlueprint:
         """
         Builds the immutable blueprint for the binder to consume.
         """
         # Fetch constraints from template matrix
-        max_charts = template_capabilities.get("maxCharts", 1)
-        max_kpis = template_capabilities.get("maxKPIs", 1)
+        max_charts = getattr(template_capabilities, "max_charts", 1)
+        max_kpis = getattr(template_capabilities, "max_kpis", 1)
         
         charts_rec = recommendations.get("charts", [])
         kpis_rec = recommendations.get("kpis", [])

@@ -59,6 +59,19 @@ class XMLModifier:
         logger.warning(f"XMLModifier: Parent not found for xpath {parent_xpath}")
         return False
 
+    def insert_node_before(self, target_xpath: str, element: ET._Element) -> bool:
+        """
+        Inserts an element immediately before the first node matching target_xpath.
+        """
+        target = self.find_node(target_xpath)
+        if target is not None:
+            parent = target.getparent()
+            index = parent.index(target)
+            parent.insert(index, element)
+            return True
+        logger.warning(f"XMLModifier: Target anchor not found for xpath {target_xpath}")
+        return False
+
     def remove_node(self, xpath: str) -> bool:
         """Removes the first node matching the xpath."""
         node = self.find_node(xpath)

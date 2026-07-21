@@ -35,7 +35,9 @@ class MetadataEngine:
         semantic_meaning = "categorical"
 
         # Simple heuristics for demonstration
-        if raw_profile.get("dtype") in ["int64", "float64"]:
+        inferred_dtype = raw_profile.get("inferred_dtype")
+        
+        if inferred_dtype == "numeric":
             role = "measure"
             tableau_datatype = "real"
             aggregation = "SUM"
@@ -49,7 +51,7 @@ class MetadataEngine:
                 aggregation = "AVG"
                 semantic_meaning = "ratio_metric"
                 
-        elif raw_profile.get("dtype") == "datetime64":
+        elif inferred_dtype == "datetime":
             role = "dimension"
             tableau_datatype = "datetime"
             semantic_meaning = "temporal"
